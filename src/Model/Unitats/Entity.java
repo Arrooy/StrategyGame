@@ -1,8 +1,12 @@
-package Model;
+package Model.Unitats;
 
+import Model.MouseSelector;
+import Model.Representable;
+import Model.Selectable;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
 import Model.UI.ObjectInfo;
+import Model.WorldManager;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -10,13 +14,13 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
 
-public class Car implements Representable,Selectable, Mappable {
+public class Entity implements Representable, Selectable, Mappable {
 
     public final int THRESHOLD_STOP_TIME_F = 10;
     public final double THRESHOLD_STOP_DIST_F = 0.5;
 
-    public int THRESHOLD_STOP_TIME = 10;
-    public double THRESHOLD_STOP_DIST = 0.5;
+    public int THRESHOLD_STOP_TIME = 100;
+    public double THRESHOLD_STOP_DIST = 0.35;
 
     private boolean selected;
     private int numberOfColisions;
@@ -38,8 +42,9 @@ public class Car implements Representable,Selectable, Mappable {
     private int maxHp = 5000;
     private int dmg = 1;
     private String img;
+    private ObjectInfo objectInfo;
 
-    public Car(double x, double y,double  maxSpeed,double maxAccel) {
+    public Entity(double x, double y, double  maxSpeed, double maxAccel) {
         this.x = x;
         this.y = y;
         estat = 0;
@@ -48,12 +53,14 @@ public class Car implements Representable,Selectable, Mappable {
         this.maxSpeed = maxSpeed;
         this.maxAccel = maxAccel;
         minArriveDistance = 100;
-        s = 7.5;
+        s = 5;
         selected = false;
         numberOfColisions = 0;
         inSlowZone = false;
 
         img = "car.png";
+
+        objectInfo = new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img);
         MouseSelector.add(this);
         Minimap.add(this);
     }
@@ -228,7 +235,7 @@ public class Car implements Representable,Selectable, Mappable {
 
     @Override
     public ObjectInfo getInfo() {
-        return new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img);
+        return objectInfo;
     }
 
     @Override
@@ -242,7 +249,12 @@ public class Car implements Representable,Selectable, Mappable {
     }
 
     @Override
-    public double getMapSize() {
+    public double getMapSizeX() {
+        return 2;
+    }
+
+    @Override
+    public double getMapSizeY() {
         return 2;
     }
 

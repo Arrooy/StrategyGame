@@ -28,6 +28,10 @@ public class MouseSelector {
 
     }
 
+    public static void addToSelection(Selectable s){
+        selected.add(s);
+    }
+
     public static void mousePressed(){
         ix = mouseX;
         iy = mouseY;

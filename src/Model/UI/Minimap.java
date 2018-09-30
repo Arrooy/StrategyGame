@@ -60,11 +60,11 @@ public class Minimap {
         g.draw(new Rectangle2D.Double(xx,yy,gameWidth * sx / widthToMap,gameHeight * sx / heightToMap));
 
         for(Mappable m : objInMap){
-            double ax = m.getCenterX() * (sx - m.getMapSize()) / widthToMap;
+            double ax = m.getCenterX() * (sx - m.getMapSizeX()) / widthToMap;
             double ay = gameHeight - sy - 1 + m.getCenterY() * sy / heightToMap;
 
             g.setColor(m.getMapColor());
-            g.fill(new Rectangle2D.Double(ax - m.getMapSize() / 2,ay, m.getMapSize(), m.getMapSize()));
+            g.fill(new Rectangle2D.Double(ax - m.getMapSizeX() / 2,ay, m.getMapSizeX(), m.getMapSizeY()));
         }
     }
 
