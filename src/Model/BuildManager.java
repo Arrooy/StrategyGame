@@ -1,6 +1,9 @@
 package Model;
 
+import Model.Edificis.Base;
 import Model.Edificis.Edifici;
+import Model.UI.Minimap;
+import Model.UI.Resources;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -25,18 +28,40 @@ public class BuildManager {
     }
 
     public static void initBuild(Edifici edifici){
+        Resources.add(- edifici.getPrice());
         blueprint = edifici;
     }
 
     public static Edifici finshBuild(){
-        return blueprint;
+        blueprint.setSpawnPoint(blueprint.getCenterX() + blueprint.getWidth() * 1.5,blueprint.getCenterY());
+        Minimap.add(blueprint);
+        MouseSelector.add(blueprint);
+        Edifici aux = blueprint;
+        blueprint = null;
+        return aux;
     }
 
     public static void abortBuild(){
+        Resources.add(blueprint.getPrice());
         blueprint = null;
     }
 
+    //Burrada de condicions.
+    private static boolean almostInsideTheSelectionArea(Selectable s,int quadrante){
+        return  MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getLX(),s.getUY(),quadrante) ||
+                MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getLX(),s.getLY(),quadrante) ||
+                MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getRX(),s.getUY(),quadrante) ||
+                MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getRX(),s.getLY(),quadrante);
+    }
+
     private static boolean isClearLocation(){
+
+        for(Selectable s : MouseSelector.getAllItems()){
+            //Mirem els 4 quadrants
+            for(int q = 1; q <= 4; q++){
+                if(almostInsideTheSelectionArea(s,q)) return false;
+            }
+        }
         return true;
     }
 
@@ -63,7 +88,4 @@ public class BuildManager {
         return blueprint != null;
     }
 
-    public static int buildPrice() {
-        return blueprint.getPrice();
-    }
 }

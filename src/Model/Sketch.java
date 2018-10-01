@@ -15,11 +15,9 @@ import static Controlador.Controller.*;
 
 
 public class Sketch implements Representable{
+
     private LinkedList<Entity> entities;
-
     private LinkedList<Edifici> buildings;
-
-
 
     public void initSketch(){
 
@@ -42,15 +40,17 @@ public class Sketch implements Representable{
     @Override
     public void update() {
         SelectionVisualitzer.update();
+        WorldManager.update();
+        BuildManager.update();
+
         for(Entity c : entities) {
             c.update();
         }
+
         for(Edifici e : buildings){
             e.update();
         }
 
-        WorldManager.update();
-        BuildManager.update();
     }
 
     @Override
@@ -78,6 +78,9 @@ public class Sketch implements Representable{
         g.drawRect(gameWidth / 2 + 100,gameHeight / 2 - 50,1,100);
     }
 
+    public void mouseMoved(){
+
+    }
 
     public void keyPressed(int key){
         switch (key) {
@@ -86,12 +89,7 @@ public class Sketch implements Representable{
                     formacion(gameWidth/2 - 100, gameHeight / 2, gameWidth/2 + 100);
                 }
                 break;
-            case 'q':
-                if(Resources.canAfford(Base.price)){
-                    Resources.add(-Base.price);
-                    BuildManager.initBuild(new Base(mouseX,mouseY,20,20,1));
-                }
-                break;
+
             default:
         }
     }
@@ -138,21 +136,41 @@ public class Sketch implements Representable{
     public void mousePressed(int button){
         //Button 1 esquerra 3 dreta
         if(button == 1){
-            if(!BuildManager.isBuilding()) MouseSelector.mousePressed();
+            if(!BuildManager.isBuilding()) {
+                if(SelectionVisualitzer.mouseOnVisualitzer()){
+                    SelectionVisualitzer.mousePressed();
+                }else{
+                    MouseSelector.mousePressed();
+                }
+            }else{
+                BuildManager.abortBuild();
+            }
+
         }else{
             if(BuildManager.isBuilding()){
+                //If its a good location, build
                 if(BuildManager.isReadyToBuild()){
                     buildings.add(BuildManager.finshBuild());
-                    BuildManager.abortBuild();
                 }
             }else {
-                double xPos = WorldManager.xPos(), yPos = WorldManager.yPos();
-                for (Selectable s : MouseSelector.selectedItems()) {
-                    if (s instanceof Entity) {
-                        Entity aux = (Entity) s;
-                        double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, aux.getSizeX()) : mouseX + xPos;
-                        double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, aux.getSizeY()) : mouseY + yPos;
-                        aux.addObjective(new Point2D.Double(ox, oy));
+                if(!SelectionVisualitzer.mouseOnVisualitzer()){
+
+                    double xPos = WorldManager.xPos(), yPos = WorldManager.yPos();
+                    for (Selectable s : MouseSelector.selectedItems()) {
+
+                        if (s instanceof Entity) {
+                            Entity aux = (Entity) s;
+                            double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, aux.getSizeX()) : mouseX + xPos;
+                            double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, aux.getSizeY()) : mouseY + yPos;
+                            aux.addObjective(new Point2D.Double(ox, oy));
+                        }
+
+                        if(s instanceof Edifici){
+                            Edifici aux = (Edifici) s;
+                            double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, 5) : mouseX + xPos;
+                            double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, 5) : mouseY + yPos;
+                            aux.setSpawnPoint(ox,oy);
+                        }
                     }
                 }
             }
@@ -161,20 +179,15 @@ public class Sketch implements Representable{
 
     public void mouseReleased(int button){
         if(button == 1){
-            if(BuildManager.isBuilding()){
-                Resources.add(BuildManager.buildPrice());
-                BuildManager.abortBuild();
-            }else{
-                MouseSelector.mouseReleased();
-                if(MouseSelector.selectedItems().isEmpty()){
-                    SelectionVisualitzer.hide();
-                }else{
-                    SelectionVisualitzer.show();
+            if(!BuildManager.isBuilding()){
+                if(!SelectionVisualitzer.mouseOnVisualitzer()) {
+                    MouseSelector.mouseReleased();
+                    if (MouseSelector.selectedItems().isEmpty()) {
+                        SelectionVisualitzer.hide();
+                    } else {
+                        SelectionVisualitzer.show();
+                    }
                 }
-            }
-        }else{
-            if(BuildManager.isBuilding()){
-
             }
         }
     }

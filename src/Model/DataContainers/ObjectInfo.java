@@ -1,4 +1,4 @@
-package Model.UI;
+package Model.DataContainers;
 
 import Utils.AssetManager;
 
@@ -16,6 +16,7 @@ public class ObjectInfo {
 
     private String img;
     private DecimalFormat nf = new DecimalFormat("0.00");
+    private Action[] actions;
 
     public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, String img) {
         this.hp = hp;
@@ -25,15 +26,29 @@ public class ObjectInfo {
         this.vel = vel;
         this.img = img;
         this.maxHp = maxHp;
+        actions = null;
+    }
+
+    public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, String img,Action[] action) {
+        this(hp,maxHp,damage,armor,attSpeed,vel,img);
+        actions = action;
+    }
+
+    public boolean hasActions(){
+        return actions != null;
+    }
+
+    public Action [] getActions(){
+        return actions;
     }
 
     public Image getImg() {
         return AssetManager.getImage(img);
     }
+
     public String getImgName() {
         return img;
     }
-
 
     public Image getImg(int w,int h) {
         return AssetManager.getImage(img,w,h);

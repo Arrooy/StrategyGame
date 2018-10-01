@@ -1,5 +1,6 @@
 package Model.UI;
 
+import Model.Edificis.Edifici;
 import Model.WorldManager;
 
 import javax.swing.border.StrokeBorder;
@@ -81,4 +82,6 @@ public class Minimap {
     public static double mapCoordToRealCoordV(double mouseY,double size) {
         return map(mouseY,gameHeight - sy,gameHeight,size/2,heightToMap - size/2);
     }
+
+
 }

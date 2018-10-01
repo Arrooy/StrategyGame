@@ -152,6 +152,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
         if(gameStarted) {
             mouseX = e.getPoint().getX();
             mouseY = e.getPoint().getY();
+            r.mouseMoved();
         }
     }
 }

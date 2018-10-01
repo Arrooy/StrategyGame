@@ -3,16 +3,19 @@ package Model.Edificis;
 import Model.Representable;
 import Model.Selectable;
 import Model.UI.Mappable;
-import Model.UI.ObjectInfo;
+import Model.DataContainers.ObjectInfo;
 import Model.WorldManager;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public abstract class Edifici implements Representable, Selectable, Mappable {
 
     protected double x,y,sx,sy;
     protected int hp;
     protected int price;
+
+    protected Point2D.Double spawnPoint;
 
     protected boolean selected = false;
     protected Color c = new Color(255,0,255);
@@ -24,6 +27,7 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
         this.sy = sy;
         this.hp = hp;
         this.price = price;
+        this.spawnPoint = new Point2D.Double(0,0);
     }
 
     public int getPrice() {
@@ -35,9 +39,13 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
         return hp <= 0;
     }
 
+    public void setSpawnPoint(double ox, double oy){
+        this.spawnPoint.setLocation(ox,oy);
+    }
+
     public void move(double x, double y){
-        this.x = x;
-        this.y = y;
+        this.x = x + WorldManager.xPos();
+        this.y = y + WorldManager.yPos();
     }
 
     public double getWidth(){
@@ -111,5 +119,4 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
 
     @Override
     public abstract ObjectInfo getInfo();
-
 }

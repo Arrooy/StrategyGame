@@ -1,11 +1,14 @@
 package Model.Unitats;
 
+import Model.DataContainers.Action;
+import Model.DataContainers.BuildABaseAction;
+
 import Model.MouseSelector;
 import Model.Representable;
 import Model.Selectable;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
-import Model.UI.ObjectInfo;
+import Model.DataContainers.ObjectInfo;
 import Model.WorldManager;
 
 import java.awt.*;
@@ -44,6 +47,8 @@ public class Entity implements Representable, Selectable, Mappable {
     private String img;
     private ObjectInfo objectInfo;
 
+    private Action[] actions = new Action[1];
+
     public Entity(double x, double y, double  maxSpeed, double maxAccel) {
         this.x = x;
         this.y = y;
@@ -58,9 +63,11 @@ public class Entity implements Representable, Selectable, Mappable {
         numberOfColisions = 0;
         inSlowZone = false;
 
-        img = "car.png";
+        actions[0] = new BuildABaseAction();
 
-        objectInfo = new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img);
+        img = "prev_miner.png";
+
+        objectInfo = new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img,actions);
         MouseSelector.add(this);
         Minimap.add(this);
     }

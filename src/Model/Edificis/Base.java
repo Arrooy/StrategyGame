@@ -1,6 +1,6 @@
 package Model.Edificis;
 
-import Model.UI.ObjectInfo;
+import Model.DataContainers.ObjectInfo;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -20,12 +20,16 @@ public class Base extends Edifici {
 
     @Override
     public void render(Graphics2D g) {
-        g.setColor(c);
+        g.setColor(selected ? c.darker() : c);
         g.fill(new Rectangle2D.Double(x - sx / 2.0,y - sy / 2.0,sx,sy));
+        if(selected){
+            g.setColor(Color.blue);
+            g.draw(new Rectangle2D.Double(spawnPoint.getX() - 2.5,spawnPoint.getY() - 2.5,5,5));
+        }
     }
 
     @Override
     public ObjectInfo getInfo() {
-        return new ObjectInfo(hp,10,10,10,10,10,"info_speed.png");
+        return new ObjectInfo(hp,10,10,10,10,10,"prev_castle.png");
     }
 }
