@@ -1,6 +1,7 @@
 package Model;
 
 import Model.Edificis.Building;
+import Model.Edificis.Mine;
 import Model.UI.Minimap;
 import Model.UI.Resources;
 import Model.UI.SelectionVisualitzer;
@@ -35,6 +36,8 @@ public class Sketch implements Representable{
 
         entityManager.init();
         buildingsManager.init();
+        for (int i = 0; i < 50; i++)
+            buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
         entityManager.add(new Miner(Math.random() * gameWidth,Math.random() * gameHeight,12,0.9));
     }
 
@@ -76,7 +79,6 @@ public class Sketch implements Representable{
                     formacion(gameWidth/2 - 100, gameHeight / 2, gameWidth/2 + 100);
                 }
                 break;
-
             default:
         }
     }
@@ -193,7 +195,6 @@ public class Sketch implements Representable{
         KEYS_USED.add(nextRandom);
         return nextRandom;
     }
-
 
     //TODO: millorar aquesta PIPE!
     public static void addEntity(Entity e) {
