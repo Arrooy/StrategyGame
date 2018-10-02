@@ -1,6 +1,6 @@
 package Model;
 
-import Model.UI.ObjectInfo;
+import Model.DataContainers.ObjectInfo;
 
 public interface Selectable {
     double getLX();

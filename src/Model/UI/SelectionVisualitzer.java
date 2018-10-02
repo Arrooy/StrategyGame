@@ -1,19 +1,20 @@
 package Model.UI;
 
+import Model.DataContainers.Action;
+import Model.DataContainers.ObjectInfo;
 import Model.MouseSelector;
 import Model.Selectable;
 import Utils.AssetManager;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static Controlador.Controller.gameHeight;
-import static Controlador.Controller.gameWidth;
+import static Controlador.Controller.*;
+import static Controlador.Controller.mouseX;
 
 public class SelectionVisualitzer {
 
@@ -22,6 +23,8 @@ public class SelectionVisualitzer {
     private static int desiredH;
     private static double time = 0;
     private static boolean ready;
+
+    private static double maxX;
 
     public static void init(){
         desiredH = gameHeight / 5;
@@ -39,14 +42,6 @@ public class SelectionVisualitzer {
     {
         double sqt = Math.pow(t,2);
         return sqt / (2.0f * (sqt - t) + 1.0f);
-    }
-
-    public static void toogle(){
-        shown = !shown;
-    }
-
-    public static boolean isReady(){
-        return ready;
     }
 
     private static void renderSelectionFace(Graphics2D g, ObjectInfo oi) {
@@ -93,17 +88,77 @@ public class SelectionVisualitzer {
         d += imageSize + 5;
         g.drawImage(AssetManager.getImage("info_armor.png",imageSize,imageSize),a,b,null);
         g.drawString("" + oi.getArmor(),c,d);
+        maxX = c + fm.stringWidth("00,00");
+    }
+    private static void renderSelectionHabilities(Graphics2D g, ObjectInfo oi) {
+        double ax = maxX + 5;
+        double ay = gameHeight - h + 5;
+        int imageSize = (int) ((h - 22.5) / 2.75);
+
+        g.setStroke(new BasicStroke(4));
+        g.draw(new Line2D.Double(ax,ay,ax,ay + h - 10));
+        ax += 7;
+        g.draw(new Line2D.Double(ax,ay,ax,ay + h - 10));
+        g.setStroke(new BasicStroke(1));
+        ax += 5;
+
+        if(oi.hasActions()) {
+            for (Action action : oi.getActions()) {
+                g.drawImage(action.getImg(imageSize, imageSize), (int) ax, (int) ay, null);
+                action.show(ax,ay,imageSize,imageSize);
+                ax += imageSize + 5;
+                if (ax > x + w || ax + imageSize + 5 > x + w) {
+                    ax = maxX + 5;
+                    ay += imageSize + 5;
+                }
+            }
+        }
+    }
+
+
+    public static boolean mouseOnVisualitzer() {
+        if(SelectionVisualitzer.isShown()){
+            return mouseY > gameHeight - SelectionVisualitzer.getH() &&
+                    mouseY < gameHeight &&
+                    mouseX > SelectionVisualitzer.getX() &&
+                    mouseX < SelectionVisualitzer.getX() + SelectionVisualitzer.getW();
+        }else{
+            return false;
+        }
+    }
+
+    public static void mousePressed() {
+        if(shown && ready && MouseSelector.hasSelection()) {
+            if(MouseSelector.multipleSelection()){
+                //Al apretar sobre un grup dins d'una multiple selection, es selecionan nomes les unitats apretades o
+                //es mostres les habilitats d'aquesta unitat!
+                /*for(Selectable s : MouseSelector.selectedItems()){
+
+                }*/
+            }else{
+                Selectable s = MouseSelector.selectedItems().getFirst();
+                ObjectInfo oi = s.getInfo();
+                if(oi.hasActions()) {
+                    for (Action action : oi.getActions()) {
+                        if(action.isMouseOver()){
+                            action.init();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static void renderMultipleSelection(LinkedList<Selectable> selectedItems, Graphics2D g) {
-        Map<String,Integer> items = new HashMap<>();
+        Map<String,Integer> multipleSelectionItems = new HashMap<>();
 
         for(Selectable s : selectedItems){
             String fotoName = s.getInfo().getImgName();
             Integer a = 1;
 
-            if(items.containsKey(fotoName)) a += items.remove(fotoName);
-            items.put(s.getInfo().getImgName(),a);
+            if(multipleSelectionItems.containsKey(fotoName)) a += multipleSelectionItems.remove(fotoName);
+            multipleSelectionItems.put(s.getInfo().getImgName(),a);
         }
 
         int ax = (int) x + 5;
@@ -113,19 +168,22 @@ public class SelectionVisualitzer {
         g.setFont(new Font("Arial",Font.PLAIN,7));
         FontMetrics fm = g.getFontMetrics();
 
-        for(String name : items.keySet()){
+        for(String name : multipleSelectionItems.keySet()){
             g.drawImage(AssetManager.getImage(name,imageSize,imageSize),ax,ay,null);
-            int val = items.get(name);
+            int val = multipleSelectionItems.get(name);
             g.drawString( val +  "", (float) (ax + imageSize / 2 - fm.stringWidth(val + "") / 2.0),ay + imageSize + fm.getAscent());
             ax += imageSize + 5;
-            ay += imageSize + 5;
-
+            if(ax >= x + w|| ax + imageSize + 5 >= x + w){
+                ay += imageSize + 5;
+                ax = (int) x + 5;
+            }
         }
     }
 
     public static void render(Graphics2D g){
 
         g.setColor(Color.black);
+        //TODO: REVISAR AQUESTA BOGERIA DE WIDTH = GAMEWIDTH - X - W...
         g.fill(new Rectangle2D.Double(x,gameHeight - h,gameWidth - x - w,h));
         if(shown && ready && MouseSelector.hasSelection()) {
 
@@ -137,6 +195,7 @@ public class SelectionVisualitzer {
 
                 renderSelectionFace(g,oi);
                 renderSelectionInfo(g,oi);
+                renderSelectionHabilities(g,oi);
             }
         }
     }
@@ -164,5 +223,21 @@ public class SelectionVisualitzer {
     }
     public static void hide() {
         shown = false;
+    }
+
+    public static boolean isShown() {
+        return shown;
+    }
+
+    public static double getH() {
+        return h;
+    }
+
+    public static double getW() {
+        return w;
+    }
+
+    public static double getX() {
+        return x;
     }
 }

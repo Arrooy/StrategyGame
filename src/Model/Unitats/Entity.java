@@ -1,65 +1,61 @@
-package Model;
+package Model.Unitats;
 
+import Model.*;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
-import Model.UI.ObjectInfo;
+import Model.DataContainers.ObjectInfo;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
-public class Car implements Representable,Selectable, Mappable {
+public abstract class Entity implements Representable, Selectable, Mappable,Managable {
 
-    public final int THRESHOLD_STOP_TIME_F = 10;
-    public final double THRESHOLD_STOP_DIST_F = 0.5;
+    private final int THRESHOLD_STOP_TIME_F = 10;
+    private final double THRESHOLD_STOP_DIST_F = 0.5;
 
-    public int THRESHOLD_STOP_TIME = 10;
-    public double THRESHOLD_STOP_DIST = 0.5;
+    private int THRESHOLD_STOP_TIME = 100;
+    private double THRESHOLD_STOP_DIST = 0.35;
 
-    private boolean selected;
     private int numberOfColisions;
-    private long lastColisionUpdate = 0;
     private boolean inSlowZone;
-
-    private LinkedList<Point2D.Double> objList;
-    private Point2D.Double actualObj;
-    private double maxSpeed,x,y,vx,vy,ax,ay,s,maxAccel,minArriveDistance;
-    private Color c;
 
     private long lastMillis;
     private int estat;
 
-    //NEEDS TO BE A CLASS!
-    private double attSpeed = 1;
-    private int def = 0;
-    private int hp = 400;
-    private int maxHp = 5000;
-    private int dmg = 1;
-    private String img;
+    private Point2D.Double actualObj;
+    private final double  minArriveDistance = 100;
+    private double maxSpeed,vx,vy,ax,ay,maxAccel;
+    private int objectiveID,lastObjectiveID;
+    //Protected vars
+    protected double s = 5,x,y;
+    protected boolean selected;
+    protected Map<Integer,Point2D.Double> objList;
+    private Double key = Sketch.getNewKey();
 
-    public Car(double x, double y,double  maxSpeed,double maxAccel) {
+    public Entity(double x, double y, double  maxSpeed, double maxAccel) {
         this.x = x;
         this.y = y;
-        estat = 0;
-        objList = new LinkedList<>();
-        c = new Color(50,180,80);
+        objList = new ConcurrentHashMap<>();
         this.maxSpeed = maxSpeed;
         this.maxAccel = maxAccel;
-        minArriveDistance = 100;
-        s = 7.5;
+
         selected = false;
+        estat = 0;
         numberOfColisions = 0;
         inSlowZone = false;
+        objectiveID = 0;
+        lastObjectiveID = 0;
 
-        img = "car.png";
         MouseSelector.add(this);
         Minimap.add(this);
     }
 
     public void addObjective(Point2D.Double o){
-        objList.add(o);
+        objList.put(objectiveID++,o);
     }
 
     private void calculateMovement(){
@@ -94,13 +90,12 @@ public class Car implements Representable,Selectable, Mappable {
         return Math.sqrt(Math.pow(x-p.getX(),2) + Math.pow(y-p.getY(),2));
     }
 
-    int aux = 0;
     @Override
     public void update() {
         switch (estat){
             case 0:
                 if(!objList.isEmpty()){
-                    actualObj = objList.getFirst();
+                    actualObj = objList.get(lastObjectiveID);
                     THRESHOLD_STOP_DIST = THRESHOLD_STOP_DIST_F;
                     estat++;
                 }
@@ -124,7 +119,7 @@ public class Car implements Representable,Selectable, Mappable {
                 if(System.currentTimeMillis() - lastMillis > THRESHOLD_STOP_TIME){
                     if(dist(x,y,actualObj) < THRESHOLD_STOP_DIST) {
                         actualObj = null;
-                        objList.removeFirst();
+                        objList.remove(lastObjectiveID++);
                         estat = 2;
                     }else{
                         estat = 1;
@@ -178,16 +173,7 @@ public class Car implements Representable,Selectable, Mappable {
     }
 
     @Override
-    public void render(Graphics2D g) {
-
-        for(Point2D p : objList){
-            g.setColor(Color.red);
-            g.draw(new Rectangle2D.Double(p.getX() - s / 2,p.getY() - s / 2,s,s));
-        }
-
-        g.setColor(selected ? Color.black : c);
-        g.fill(new Rectangle2D.Double(x - s / 2,y - s/2,s,s));
-    }
+    public abstract void render(Graphics2D g);
 
     public double getSizeX() {
         return s;
@@ -227,28 +213,34 @@ public class Car implements Representable,Selectable, Mappable {
     }
 
     @Override
-    public ObjectInfo getInfo() {
-        return new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img);
-    }
+    public abstract ObjectInfo getInfo();
 
     @Override
     public double getCenterX() {
-        return x ;//- WorldManager.xPos();
+        return x ;
     }
 
     @Override
     public double getCenterY() {
-        return y ;//- WorldManager.yPos();
+        return y ;
     }
 
     @Override
-    public double getMapSize() {
+    public double getMapSizeX() {
         return 2;
     }
 
     @Override
-    public Color getMapColor() {
-        return c;
+    public double getMapSizeY() {
+        return 2;
     }
 
+    @Override
+    public abstract Color getMapColor();
+
+    public Double getKey() {
+        return key;
+    }
+
+    public abstract long getTrainingTime();
 }

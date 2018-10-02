@@ -5,6 +5,7 @@ import java.awt.*;
 public interface Mappable {
     double getCenterX();
     double getCenterY();
-    double getMapSize();
+    double getMapSizeX();
+    double getMapSizeY();
     Color getMapColor();
 }

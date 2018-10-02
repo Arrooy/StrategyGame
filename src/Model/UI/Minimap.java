@@ -2,7 +2,6 @@ package Model.UI;
 
 import Model.WorldManager;
 
-import javax.swing.border.StrokeBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
@@ -60,11 +59,11 @@ public class Minimap {
         g.draw(new Rectangle2D.Double(xx,yy,gameWidth * sx / widthToMap,gameHeight * sx / heightToMap));
 
         for(Mappable m : objInMap){
-            double ax = m.getCenterX() * (sx - m.getMapSize()) / widthToMap;
+            double ax = m.getCenterX() * (sx - m.getMapSizeX()) / widthToMap;
             double ay = gameHeight - sy - 1 + m.getCenterY() * sy / heightToMap;
 
             g.setColor(m.getMapColor());
-            g.fill(new Rectangle2D.Double(ax - m.getMapSize() / 2,ay, m.getMapSize(), m.getMapSize()));
+            g.fill(new Rectangle2D.Double(ax - m.getMapSizeX() / 2,ay, m.getMapSizeX(), m.getMapSizeY()));
         }
     }
 
@@ -81,4 +80,6 @@ public class Minimap {
     public static double mapCoordToRealCoordV(double mouseY,double size) {
         return map(mouseY,gameHeight - sy,gameHeight,size/2,heightToMap - size/2);
     }
+
+
 }

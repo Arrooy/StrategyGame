@@ -1,11 +1,12 @@
 package Model;
 
+import Model.Edificis.Building;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
-import static Controlador.Controller.mouseX;
-import static Controlador.Controller.mouseY;
+import static Controlador.Controller.*;
 
 public class MouseSelector {
 
@@ -25,14 +26,21 @@ public class MouseSelector {
 
     public static void add(Selectable s){
         selectables.add(s);
+    }
+    public static void remove(Building blueprint) {
+        selectables.remove(blueprint);
+    }
 
+    public static void addToSelection(Selectable s){
+        selected.add(s);
     }
 
     public static void mousePressed(){
+
         ix = mouseX;
         iy = mouseY;
         selecting = true;
-        if(!selected.isEmpty()) selected.clear();
+        if (!selected.isEmpty()) selected.clear();
     }
 
     public static void mouseReleased() {
@@ -57,23 +65,26 @@ public class MouseSelector {
 
     //VERIFICA TOCAR UN SELECTABLE AMB ALGUNA CANTONADA
     private static boolean almostInsideTheSelectionArea(Selectable s){
-        return  selectAPoint(s.getLX(),s.getUY()) ||selectAPoint(s.getLX(),s.getLY())
-                || selectAPoint(s.getRX(),s.getUY()) || selectAPoint(s.getRX(),s.getLY());
+        return  selectAPoint(ix,iy,mouseX,mouseY,s.getLX(),s.getUY(),quadrante) ||
+                selectAPoint(ix,iy,mouseX,mouseY,s.getLX(),s.getLY(),quadrante) ||
+                selectAPoint(ix,iy,mouseX,mouseY,s.getRX(),s.getUY(),quadrante) ||
+                selectAPoint(ix,iy,mouseX,mouseY,s.getRX(),s.getLY(),quadrante);
     }
 
-    private static boolean selectAPoint(double x,double y){
+
+    public static boolean selectAPoint(double EX,double EY,double DX,double DY ,double x,double y,int quadrante){
         if(quadrante == 1){
-            return x >= ix && x <= mouseX &&
-                    y <= iy && y >= mouseY;
+            return x >= EX && x <= DX &&
+                    y <= EY && y >= DY;
         }else if(quadrante == 2){
-            return x <= ix && x >= mouseX &&
-                    y <= iy && y >= mouseY;
+            return x <= EX && x >= DX &&
+                    y <= EY && y >= DY;
         }else if (quadrante == 3){
-            return x <= ix && x >= mouseX &&
-                    y >= iy && y <= mouseY;
+            return x <= EX && x >= DX &&
+                    y >= EY && y <= DY;
         }else{
-            return x >= ix && x <= mouseX &&
-                    y >= iy && y <= mouseY;
+            return x >= EX && x <= DX &&
+                    y >= EY && y <= DY;
         }
     }
 
@@ -119,4 +130,6 @@ public class MouseSelector {
     public static LinkedList<Selectable> getAllItems() {
         return selectables;
     }
+
+
 }
