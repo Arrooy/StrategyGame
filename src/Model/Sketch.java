@@ -2,12 +2,14 @@ package Model;
 
 import Model.Edificis.Building;
 import Model.UI.Minimap;
+import Model.UI.Organizer;
 import Model.UI.Resources;
 import Model.UI.SelectionVisualitzer;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 
@@ -30,6 +32,10 @@ public class Sketch implements Representable{
         Minimap.init();
         BuildManager.init();
 
+
+        organizer = new Organizer();
+        rightMousePressed = false;
+
         entityManager = new DedicatedManager();
         buildingsManager = new DedicatedManager<>();
 
@@ -42,6 +48,10 @@ public class Sketch implements Representable{
     public void update() {
         SelectionVisualitzer.update();
         WorldManager.update();
+
+        if (rightMousePressed) {
+            organizer.addPoint((int) mouseX, (int) mouseY);
+        }
         BuildManager.update();
     }
 
@@ -49,6 +59,8 @@ public class Sketch implements Representable{
     public void render(Graphics2D g) {
         g.translate( - WorldManager.xPos(),- WorldManager.yPos());
 
+        if (rightMousePressed) organizer.render(g);
+        
         entityManager.getObjects().forEach((a)->a.render(g));
         buildingsManager.getObjects().forEach((a)->a.render(g));
 
@@ -60,9 +72,9 @@ public class Sketch implements Representable{
         Resources.render(g);
         BuildManager.render(g);
 
-        g.setColor(Color.red);
-        g.drawRect(gameWidth / 2 - 100,gameHeight / 2 - 50,1,100);
-        g.drawRect(gameWidth / 2 + 100,gameHeight / 2 - 50,1,100);
+    //    g.setColor(Color.red);
+    //    g.drawRect(gameWidth / 2 - 100,gameHeight / 2 - 50,1,100);
+    //    g.drawRect(gameWidth / 2 + 100,gameHeight / 2 - 50,1,100);
     }
 
     public void mouseMoved(){
@@ -71,18 +83,16 @@ public class Sketch implements Representable{
 
     public void keyPressed(int key){
         switch (key) {
-            case ' ':
+            case KeyEvent.VK_SPACE:
                 if(MouseSelector.hasSelection()){
                     formacion(gameWidth/2 - 100, gameHeight / 2, gameWidth/2 + 100);
                 }
                 break;
-
             default:
         }
     }
 
     private void formacion(double ix,double iy,double fx) {
-
         double ax = ix,ay = iy;
         boolean advanced = true;
 
@@ -134,6 +144,9 @@ public class Sketch implements Representable{
             }
 
         }else{
+
+            rightMousePressed = true;
+
             if(!SelectionVisualitzer.mouseOnVisualitzer()) {
                 if (BuildManager.isBuilding()) {
                     //If its a good location, build
@@ -176,6 +189,23 @@ public class Sketch implements Representable{
                     }
                 }
             }
+        }else{
+            rightMousePressed = false;
+
+            try {
+                int[][] points = organizer.getPositions(MouseSelector.selectedItems().size());
+                for(int i = 0; i < MouseSelector.selectedItems().size(); i++) {
+                    Selectable s = MouseSelector.selectedItems().get(i);
+                    if(s instanceof Car){
+                        Car aux = (Car) s;
+                        aux.addObjective(new Point2D.Double(points[i][0], points[i][1]));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            organizer.resetOrganization();
         }
     }
 
