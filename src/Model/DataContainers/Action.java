@@ -1,5 +1,6 @@
 package Model.DataContainers;
 
+import Model.Selectable;
 import Utils.AssetManager;
 
 import java.awt.*;
@@ -14,10 +15,13 @@ public abstract class Action {
     private boolean mouseOver;
     private boolean shown;
 
-    public Action(String img){
+    protected Selectable actuator;
+
+    public Action(String img,Selectable a){
         this.img = img;
         mouseOver = false;
         shown = false;
+        actuator = a;
     }
 
     //Desenvolupament de l'accio

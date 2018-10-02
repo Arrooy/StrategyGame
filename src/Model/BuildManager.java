@@ -1,13 +1,11 @@
 package Model;
 
-import Model.Edificis.Base;
-import Model.Edificis.Edifici;
+import Model.Edificis.Building;
 import Model.UI.Minimap;
 import Model.UI.Resources;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
 
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
@@ -17,7 +15,7 @@ public class BuildManager {
     private final static Color okColor = new Color(50,200,100);
     private final static Color badColor = new Color(200,50,100);
 
-    private static Edifici blueprint;
+    private static Building blueprint;
     private static boolean readyToBuild;
     private static Color c;
 
@@ -27,16 +25,16 @@ public class BuildManager {
 
     }
 
-    public static void initBuild(Edifici edifici){
-        Resources.add(- edifici.getPrice());
-        blueprint = edifici;
+    public static void initBuild(Building building){
+        Resources.add(- building.getPrice());
+        blueprint = building;
     }
 
-    public static Edifici finshBuild(){
+    public static Building finshBuild(){
         blueprint.setSpawnPoint(blueprint.getCenterX() + blueprint.getWidth() * 1.5,blueprint.getCenterY());
         Minimap.add(blueprint);
         MouseSelector.add(blueprint);
-        Edifici aux = blueprint;
+        Building aux = blueprint;
         blueprint = null;
         return aux;
     }

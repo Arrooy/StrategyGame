@@ -1,7 +1,6 @@
 package Model;
 
-import Model.Edificis.Edifici;
-import Model.UI.SelectionVisualitzer;
+import Model.Edificis.Building;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -28,7 +27,7 @@ public class MouseSelector {
     public static void add(Selectable s){
         selectables.add(s);
     }
-    public static void remove(Edifici blueprint) {
+    public static void remove(Building blueprint) {
         selectables.remove(blueprint);
     }
 

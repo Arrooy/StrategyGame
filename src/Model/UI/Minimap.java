@@ -1,9 +1,7 @@
 package Model.UI;
 
-import Model.Edificis.Edifici;
 import Model.WorldManager;
 
-import javax.swing.border.StrokeBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;

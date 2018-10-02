@@ -1,11 +1,11 @@
 package Model;
 
-import Model.Edificis.Base;
-import Model.Edificis.Edifici;
+import Model.Edificis.Building;
 import Model.UI.Minimap;
 import Model.UI.Resources;
 import Model.UI.SelectionVisualitzer;
 import Model.Unitats.Entity;
+import Model.Unitats.Miner;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -16,8 +16,10 @@ import static Controlador.Controller.*;
 
 public class Sketch implements Representable{
 
-    private LinkedList<Entity> entities;
-    private LinkedList<Edifici> buildings;
+    private static DedicatedManager<Entity> entityManager;
+    private static DedicatedManager<Building> buildingsManager;
+
+    private static LinkedList<Double> KEYS_USED;
 
     public void initSketch(){
 
@@ -28,13 +30,12 @@ public class Sketch implements Representable{
         Minimap.init();
         BuildManager.init();
 
-        buildings = new LinkedList<>();
-        entities = new LinkedList<>();
+        entityManager = new DedicatedManager();
+        buildingsManager = new DedicatedManager<>();
 
-        //12 0.8
-        for(int i = 0; i < 500; i++){
-            entities.add(new Entity(Math.random() * gameWidth,Math.random() * gameHeight,12,0.9));
-        }
+        entityManager.init();
+        buildingsManager.init();
+        entityManager.add(new Miner(Math.random() * gameWidth,Math.random() * gameHeight,12,0.9));
     }
 
     @Override
@@ -42,28 +43,14 @@ public class Sketch implements Representable{
         SelectionVisualitzer.update();
         WorldManager.update();
         BuildManager.update();
-
-        for(Entity c : entities) {
-            c.update();
-        }
-
-        for(Edifici e : buildings){
-            e.update();
-        }
-
     }
 
     @Override
     public void render(Graphics2D g) {
         g.translate( - WorldManager.xPos(),- WorldManager.yPos());
 
-        for(Entity c : entities) {
-            c.render(g);
-        }
-
-        for(Edifici e : buildings){
-            e.render(g);
-        }
+        entityManager.getObjects().forEach((a)->a.render(g));
+        buildingsManager.getObjects().forEach((a)->a.render(g));
 
         g.translate( + WorldManager.xPos(),+ WorldManager.yPos());
 
@@ -147,13 +134,13 @@ public class Sketch implements Representable{
             }
 
         }else{
-            if(BuildManager.isBuilding()){
-                //If its a good location, build
-                if(BuildManager.isReadyToBuild()){
-                    buildings.add(BuildManager.finshBuild());
-                }
-            }else {
-                if(!SelectionVisualitzer.mouseOnVisualitzer()){
+            if(!SelectionVisualitzer.mouseOnVisualitzer()) {
+                if (BuildManager.isBuilding()) {
+                    //If its a good location, build
+                    if (BuildManager.isReadyToBuild()) {
+                        buildingsManager.add(BuildManager.finshBuild());
+                    }
+                } else {
 
                     double xPos = WorldManager.xPos(), yPos = WorldManager.yPos();
                     for (Selectable s : MouseSelector.selectedItems()) {
@@ -165,11 +152,11 @@ public class Sketch implements Representable{
                             aux.addObjective(new Point2D.Double(ox, oy));
                         }
 
-                        if(s instanceof Edifici){
-                            Edifici aux = (Edifici) s;
+                        if (s instanceof Building) {
+                            Building aux = (Building) s;
                             double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, 5) : mouseX + xPos;
                             double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, 5) : mouseY + yPos;
-                            aux.setSpawnPoint(ox,oy);
+                            aux.setSpawnPoint(ox, oy);
                         }
                     }
                 }
@@ -190,5 +177,26 @@ public class Sketch implements Representable{
                 }
             }
         }
+    }
+
+    public static Double getNewKey() {
+        if(KEYS_USED == null)
+            KEYS_USED = new LinkedList<>();
+
+        double nextRandom = Math.random();
+
+        while(KEYS_USED.contains(nextRandom)){
+            System.out.println("RANDOM REPETIDO !!!!");
+            nextRandom = Math.random();
+        }
+
+        KEYS_USED.add(nextRandom);
+        return nextRandom;
+    }
+
+
+    //TODO: millorar aquesta PIPE!
+    public static void addEntity(Entity e) {
+        entityManager.add(e);
     }
 }

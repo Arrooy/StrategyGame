@@ -50,8 +50,17 @@ public class ObjectInfo {
         return img;
     }
 
+
+    //TODO: DOWNLOAD ORIGINAL SIZED IMAGES.
     public Image getImg(int w,int h) {
-        return AssetManager.getImage(img,w,h);
+        Image aux = AssetManager.getImage(img);
+        //System.out.println(w + " " + h +" " + img + " " + aux.getWidth(null) + "  " + aux.getHeight(null));
+        if(aux.getWidth(null) == w && aux.getHeight(null) == h){
+          //  System.out.println("GIVIN ORIGINAL " + img);
+            return aux;
+        }else{
+            return AssetManager.getImage(img,w,h);
+        }
     }
 
     public int getHp() {

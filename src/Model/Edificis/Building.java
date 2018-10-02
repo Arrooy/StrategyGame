@@ -1,15 +1,14 @@
 package Model.Edificis;
 
-import Model.Representable;
-import Model.Selectable;
+import Model.*;
 import Model.UI.Mappable;
 import Model.DataContainers.ObjectInfo;
-import Model.WorldManager;
+import Model.Unitats.Entity;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 
-public abstract class Edifici implements Representable, Selectable, Mappable {
+public abstract class Building implements Representable, Selectable, Mappable, Managable{
 
     protected double x,y,sx,sy;
     protected int hp;
@@ -19,8 +18,9 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
 
     protected boolean selected = false;
     protected Color c = new Color(255,0,255);
+    private Double key = Sketch.getNewKey();
 
-    public Edifici(double x, double y, double sx, double sy, int hp,int price) {
+    public Building(double x, double y, double sx, double sy, int hp, int price) {
         this.x = x;
         this.y = y;
         this.sx = sx;
@@ -42,6 +42,10 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
     public void setSpawnPoint(double ox, double oy){
         this.spawnPoint.setLocation(ox,oy);
     }
+    public Point2D.Double getSpawnPoint(){
+        return spawnPoint;
+    }
+
 
     public void move(double x, double y){
         this.x = x + WorldManager.xPos();
@@ -119,4 +123,27 @@ public abstract class Edifici implements Representable, Selectable, Mappable {
 
     @Override
     public abstract ObjectInfo getInfo();
+
+    public Double getKey() {
+        return key;
+    }
+
+
+    protected class TrainTask {
+        private long trainingTime;
+        private Entity nextEntityToTrain;
+
+        protected TrainTask(Entity nextEntityToTrain) {
+            this.nextEntityToTrain = nextEntityToTrain;
+            this.trainingTime = nextEntityToTrain.getTrainingTime();
+        }
+
+        protected long getTrainingTime() {
+            return trainingTime;
+        }
+
+        protected Entity getNextEntityToTrain() {
+            return nextEntityToTrain;
+        }
+    }
 }

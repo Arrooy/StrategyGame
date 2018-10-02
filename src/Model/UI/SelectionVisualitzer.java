@@ -94,7 +94,6 @@ public class SelectionVisualitzer {
         double ax = maxX + 5;
         double ay = gameHeight - h + 5;
         int imageSize = (int) ((h - 22.5) / 2.75);
-        System.out.println(imageSize);
 
         g.setStroke(new BasicStroke(4));
         g.draw(new Line2D.Double(ax,ay,ax,ay + h - 10));
@@ -184,6 +183,7 @@ public class SelectionVisualitzer {
     public static void render(Graphics2D g){
 
         g.setColor(Color.black);
+        //TODO: REVISAR AQUESTA BOGERIA DE WIDTH = GAMEWIDTH - X - W...
         g.fill(new Rectangle2D.Double(x,gameHeight - h,gameWidth - x - w,h));
         if(shown && ready && MouseSelector.hasSelection()) {
 
