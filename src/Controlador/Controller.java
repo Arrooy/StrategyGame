@@ -65,7 +65,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
     }
     @Override
     public void keyPressed(KeyEvent e) {
-        r.keyPressed(e.getKeyChar());
+        r.keyPressed(e.getKeyCode());
     }
 
     @Override
