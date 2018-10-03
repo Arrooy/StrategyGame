@@ -1,12 +1,14 @@
 package Model;
 
 import Model.Edificis.Building;
+import Model.Unitats.Entity;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 
-import static Controlador.Controller.*;
+import static Controlador.Controller.mouseX;
+import static Controlador.Controller.mouseY;
 
 public class MouseSelector {
 
@@ -132,4 +134,10 @@ public class MouseSelector {
     }
 
 
+    public static Entity getFirstEntity() {
+        for (Selectable s : selectedItems()) {
+            if (s instanceof Entity) return (Entity) s;
+        }
+        return null;
+    }
 }

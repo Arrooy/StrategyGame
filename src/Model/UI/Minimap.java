@@ -67,8 +67,6 @@ public class Minimap {
         }
     }
 
-
-
     private static double map(double value, double istart, double istop, double ostart, double ostop) {
         return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     }
@@ -80,6 +78,4 @@ public class Minimap {
     public static double mapCoordToRealCoordV(double mouseY,double size) {
         return map(mouseY,gameHeight - sy,gameHeight,size/2,heightToMap - size/2);
     }
-
-
 }

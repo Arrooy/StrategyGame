@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static Controlador.Controller.*;
-import static Controlador.Controller.mouseX;
 
 public class SelectionVisualitzer {
 
@@ -90,6 +89,7 @@ public class SelectionVisualitzer {
         g.drawString("" + oi.getArmor(),c,d);
         maxX = c + fm.stringWidth("00,00");
     }
+
     private static void renderSelectionHabilities(Graphics2D g, ObjectInfo oi) {
         double ax = maxX + 5;
         double ay = gameHeight - h + 5;

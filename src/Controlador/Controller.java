@@ -1,6 +1,5 @@
 package Controlador;
 
-import Model.Representable;
 import Model.Sketch;
 import Model.UI.Minimap;
 import View.Vista;
@@ -70,7 +69,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
 
     @Override
     public void keyReleased(KeyEvent e) {
-        r.keyReleased(e.getKeyChar());
+        r.keyReleased(e.getKeyCode());
     }
 
     @Override
@@ -121,12 +120,12 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
 
     @Override
     public void mousePressed(MouseEvent e) {
-        r.mousePressed(e.getButton());
+        r.mousePressed(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        r.mouseReleased(e.getButton());
+        r.mouseReleased(e);
     }
 
     @Override

@@ -15,7 +15,6 @@ public class Base extends Building {
 
     public static final int price = 200;
     private ObjectInfo objectInfo;
-    private long lastTraining = 0;
 
     private ConcurrentLinkedQueue<TrainTask> trainQueue;
 
@@ -34,12 +33,12 @@ public class Base extends Building {
     public void update() {
         if(!trainQueue.isEmpty()){
             TrainTask tt = trainQueue.peek();
-            if(System.currentTimeMillis() - lastTraining >= tt.getTrainingTime()) {
+            if (System.currentTimeMillis() - tt.getLastTrain() >= tt.getTrainingTime()) {
                 Entity aux = tt.getNextEntityToTrain();
                 Sketch.addEntity(aux);
                 aux.addObjective(this.getSpawnPoint());
                 trainQueue.remove();
-                lastTraining = System.currentTimeMillis();
+                if (!trainQueue.isEmpty()) trainQueue.peek().initTrain();
             }
         }
     }
@@ -56,12 +55,16 @@ public class Base extends Building {
             double maxTrainSize = sx + 30;
             int height = 5;
             double gap = sy / 2.0 + 5;
-            long trainingTime = trainQueue.peek().getTrainingTime();
+
+            TrainTask aux = trainQueue.peek();
+            long trainingTime = aux.getTrainingTime();
+            long lastTrain = aux.getLastTrain();
+
             g.setColor(Color.gray);
             g.fill(new Rectangle2D.Double(x - maxTrainSize / 2,y - gap - height,maxTrainSize,height));
 
             g.setColor(Color.blue);
-            g.fill(new Rectangle2D.Double(x - maxTrainSize / 2,y - gap - height, (System.currentTimeMillis() - lastTraining) * maxTrainSize / trainingTime,height));
+            g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, (System.currentTimeMillis() - lastTrain) * maxTrainSize / trainingTime, height));
 
             g.setFont(new Font("Arial",Font.PLAIN,10));
             FontMetrics fm = g.getFontMetrics();
@@ -77,7 +80,6 @@ public class Base extends Building {
     }
 
     public void train(Miner miner) {
-        lastTraining = System.currentTimeMillis();
         trainQueue.add(new TrainTask(miner));
     }
 }

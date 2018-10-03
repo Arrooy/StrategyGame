@@ -1,13 +1,12 @@
 package Model.Unitats;
 
+import Model.DataContainers.ObjectInfo;
 import Model.*;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
-import Model.DataContainers.ObjectInfo;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -243,4 +242,12 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
     }
 
     public abstract long getTrainingTime();
+
+    public double getObjectiveX() {
+        return objList.get(lastObjectiveID).getX();
+    }
+
+    public double getObjectiveY() {
+        return objList.get(lastObjectiveID).getY();
+    }
 }

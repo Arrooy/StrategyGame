@@ -11,9 +11,9 @@ public class Miner extends Entity {
 
     private double attSpeed = 1;
     private int def = 0;
-    private int hp = 400;
-    private int maxHp = 5000;
-    private int dmg = 1;
+    private int hp = 2;
+    private int maxHp = 2;
+    private int dmg = 0;
     private String img;
     private ObjectInfo objectInfo;
 
@@ -34,13 +34,12 @@ public class Miner extends Entity {
 
     @Override
     public void render(Graphics2D g) {
-
         objList.forEach((n,p)->{
             g.setColor(Color.red);
             g.draw(new Rectangle2D.Double(p.getX() - s / 2,p.getY() - s / 2,s,s));
         });
 
-        g.setColor(selected ? Color.black : c);
+        g.setColor(selected ? c.darker() : c);
         g.fill(new Rectangle2D.Double(x - s / 2,y - s/2,s,s));
     }
 
@@ -56,6 +55,6 @@ public class Miner extends Entity {
 
     @Override
     public long getTrainingTime() {
-        return 10;
+        return 1000;
     }
 }

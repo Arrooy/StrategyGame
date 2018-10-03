@@ -2,19 +2,16 @@ package Model;
 
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
-import Model.UI.Minimap;
-import Model.UI.Organizer;
-import Model.UI.Resources;
-import Model.UI.SelectionVisualitzer;
+import Model.UI.*;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
-import static Controlador.Controller.*;
+import static Controlador.Controller.gameHeight;
+import static Controlador.Controller.gameWidth;
 
 
 public class Sketch implements Representable{
@@ -32,29 +29,24 @@ public class Sketch implements Representable{
         Resources.init();
         Minimap.init();
         BuildManager.init();
-
-
-        organizer = new Organizer();
-        rightMousePressed = false;
+        Organizer.init();
+        FormationVisualitzer.init();
 
         entityManager = new DedicatedManager();
         buildingsManager = new DedicatedManager<>();
 
         entityManager.init();
         buildingsManager.init();
-        for (int i = 0; i < 50; i++)
-            buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
-        entityManager.add(new Miner(Math.random() * gameWidth,Math.random() * gameHeight,12,0.9));
-    }
 
+        buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
+        for (int i = 0; i < 500; i++)
+            entityManager.add(new Miner(Math.random() * gameWidth, Math.random() * gameHeight, 12, 0.9));
+    }
     @Override
     public void update() {
         SelectionVisualitzer.update();
         WorldManager.update();
-
-        if (rightMousePressed) {
-            organizer.addPoint((int) mouseX, (int) mouseY);
-        }
+        Organizer.update();
         BuildManager.update();
     }
 
@@ -62,22 +54,18 @@ public class Sketch implements Representable{
     public void render(Graphics2D g) {
         g.translate( - WorldManager.xPos(),- WorldManager.yPos());
 
-        if (rightMousePressed) organizer.render(g);
-        
+        Organizer.render(g);
         entityManager.getObjects().forEach((a)->a.render(g));
         buildingsManager.getObjects().forEach((a)->a.render(g));
 
         g.translate( + WorldManager.xPos(),+ WorldManager.yPos());
 
+        FormationVisualitzer.render(g);
         MouseSelector.render(g);
         SelectionVisualitzer.render(g);
         Minimap.render(g);
         Resources.render(g);
         BuildManager.render(g);
-
-    //    g.setColor(Color.red);
-    //    g.drawRect(gameWidth / 2 - 100,gameHeight / 2 - 50,1,100);
-    //    g.drawRect(gameWidth / 2 + 100,gameHeight / 2 - 50,1,100);
     }
 
     public void mouseMoved(){
@@ -86,105 +74,69 @@ public class Sketch implements Representable{
 
     public void keyPressed(int key){
         switch (key) {
-            case KeyEvent.VK_SPACE:
-                if(MouseSelector.hasSelection()){
-                    formacion(gameWidth/2 - 100, gameHeight / 2, gameWidth/2 + 100);
-                }
-                break;
+
             default:
         }
     }
 
-    private void formacion(double ix,double iy,double fx) {
-        double ax = ix,ay = iy;
-        boolean advanced = true;
 
-        Entity entity = (Entity) MouseSelector.selectedItems().getFirst();
-        int numberOfCars = (int) Math.floor((fx - ix) / (entity.getSizeX() + 1));
-        double espaiSobrant = (fx - ix) - entity.getSizeX() * numberOfCars;
-        double spacerX = espaiSobrant / numberOfCars,spacerY = entity.getSizeY()/2;
-
-        int aux = 0;
-        for(Selectable s : MouseSelector.selectedItems()) {
-            if(s instanceof Entity){
-                entity = (Entity) s;
-                if(advanced && numberOfCars > MouseSelector.selectedItems().size() - numberOfCars * aux) {
-                    ax += entity.getSizeX()/2 * (numberOfCars - MouseSelector.selectedItems().size() + numberOfCars * aux) + entity.getSizeX();
-                    advanced = false;
-                }
-
-
-                entity.addObjective(new Point2D.Double(ax + entity.getSizeX() / 2,ay + entity.getSizeY() / 2));
-
-                ax += entity.getSizeX() + spacerX;
-                if(ax >= fx || ax + entity.getSizeX() + spacerX >= fx){
-                    ax = ix;
-                    aux++;
-                    ay += entity.getSizeX() + spacerY;
-                    advanced = true;
-                }
-            }
-        }
-    }
-
-    public void keyReleased(int key){
+    public void keyReleased(int key) {
         switch (key) {
+
             default:
         }
     }
 
-    public void mousePressed(int button){
-        //Button 1 esquerra 3 dreta
+    public void mousePressed(MouseEvent e) {
+
+        int button = e.getButton();
+        //Boto esquerra
         if(button == 1){
+            //Estem mode construccio?
             if(!BuildManager.isBuilding()) {
+                //Estem sobre la seccio d'informacio?
                 if(SelectionVisualitzer.mouseOnVisualitzer()){
                     SelectionVisualitzer.mousePressed();
                 }else{
-                    MouseSelector.mousePressed();
+                    //Estem sobre la seccio de formacions?
+                    if (FormationVisualitzer.mouseOnVisualitzer()) {
+                        FormationVisualitzer.mousePressed();
+                    } else {
+                        //Estem sobre el terreny de joc
+                        MouseSelector.mousePressed();
+                    }
                 }
             }else{
                 BuildManager.abortBuild();
             }
 
         }else{
+            //Boto dret
 
-            rightMousePressed = true;
-
-            if(!SelectionVisualitzer.mouseOnVisualitzer()) {
+            //Si estem sobre el terreny de joc
+            if (!SelectionVisualitzer.mouseOnVisualitzer() && !FormationVisualitzer.mouseOnVisualitzer()) {
                 if (BuildManager.isBuilding()) {
-                    //If its a good location, build
+                    //Es una bona zona per establir l'edifici?
                     if (BuildManager.isReadyToBuild()) {
                         buildingsManager.add(BuildManager.finshBuild());
                     }
                 } else {
-
-                    double xPos = WorldManager.xPos(), yPos = WorldManager.yPos();
-                    for (Selectable s : MouseSelector.selectedItems()) {
-
-                        if (s instanceof Entity) {
-                            Entity aux = (Entity) s;
-                            double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, aux.getSizeX()) : mouseX + xPos;
-                            double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, aux.getSizeY()) : mouseY + yPos;
-                            aux.addObjective(new Point2D.Double(ox, oy));
-                        }
-
-                        if (s instanceof Building) {
-                            Building aux = (Building) s;
-                            double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, 5) : mouseX + xPos;
-                            double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, 5) : mouseY + yPos;
-                            aux.setSpawnPoint(ox, oy);
-                        }
-                    }
+                    Organizer.mousePressed();
                 }
             }
         }
     }
 
-    public void mouseReleased(int button){
+    public void mouseReleased(MouseEvent e) {
+        int button = e.getButton();
+        //Boto esquerra
         if(button == 1){
-            if(!BuildManager.isBuilding()){
-                if(!SelectionVisualitzer.mouseOnVisualitzer()) {
+            //Si no estem mode construccio
+            if (!BuildManager.isBuilding()) {
+                //Si no estem sobre la seccio d'informacio
+                if (!SelectionVisualitzer.mouseOnVisualitzer() && !FormationVisualitzer.mouseOnVisualitzer()) {
                     MouseSelector.mouseReleased();
+
                     if (MouseSelector.selectedItems().isEmpty()) {
                         SelectionVisualitzer.hide();
                     } else {
@@ -193,22 +145,9 @@ public class Sketch implements Representable{
                 }
             }
         }else{
-            rightMousePressed = false;
+            //Boto dret
+            Organizer.mouseReleased();
 
-            try {
-                int[][] points = organizer.getPositions(MouseSelector.selectedItems().size());
-                for(int i = 0; i < MouseSelector.selectedItems().size(); i++) {
-                    Selectable s = MouseSelector.selectedItems().get(i);
-                    if(s instanceof Car){
-                        Car aux = (Car) s;
-                        aux.addObjective(new Point2D.Double(points[i][0], points[i][1]));
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
-            organizer.resetOrganization();
         }
     }
 

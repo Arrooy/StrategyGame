@@ -1,8 +1,8 @@
 package Model.Edificis;
 
+import Model.DataContainers.ObjectInfo;
 import Model.*;
 import Model.UI.Mappable;
-import Model.DataContainers.ObjectInfo;
 import Model.Unitats.Entity;
 
 import java.awt.*;
@@ -130,12 +130,13 @@ public abstract class Building implements Representable, Selectable, Mappable, M
 
 
     protected class TrainTask {
-        private long trainingTime;
+        private long trainingTime, lastTrain;
         private Entity nextEntityToTrain;
 
         protected TrainTask(Entity nextEntityToTrain) {
             this.nextEntityToTrain = nextEntityToTrain;
             this.trainingTime = nextEntityToTrain.getTrainingTime();
+            lastTrain = System.currentTimeMillis();
         }
 
         protected long getTrainingTime() {
@@ -144,6 +145,14 @@ public abstract class Building implements Representable, Selectable, Mappable, M
 
         protected Entity getNextEntityToTrain() {
             return nextEntityToTrain;
+        }
+
+        public long getLastTrain() {
+            return lastTrain;
+        }
+
+        public void initTrain() {
+            lastTrain = System.currentTimeMillis();
         }
     }
 }
