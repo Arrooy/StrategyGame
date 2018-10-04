@@ -1,7 +1,6 @@
 package Model;
 
 import Model.Edificis.Building;
-import Model.Edificis.Mine;
 import Model.UI.*;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
@@ -16,8 +15,9 @@ import static Controlador.Controller.gameWidth;
 
 public class Sketch implements Representable{
 
-    private static DedicatedManager<Entity> entityManager;
-    private static DedicatedManager<Building> buildingsManager;
+    public static final DedicatedManager<Entity> entityManager = new DedicatedManager();
+    public static final DedicatedManager<Building> buildingsManager = new DedicatedManager<>();
+    public static final DedicatedManager<Mappable> minimapManager = new DedicatedManager<>();
 
     private static LinkedList<Double> KEYS_USED;
 
@@ -32,13 +32,11 @@ public class Sketch implements Representable{
         Organizer.init();
         FormationVisualitzer.init();
 
-        entityManager = new DedicatedManager();
-        buildingsManager = new DedicatedManager<>();
-
         entityManager.init();
         buildingsManager.init();
+        minimapManager.init();
 
-        buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
+        // buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
         for (int i = 0; i < 500; i++)
             entityManager.add(new Miner(Math.random() * gameWidth, Math.random() * gameHeight, 12, 0.9));
     }
@@ -57,15 +55,14 @@ public class Sketch implements Representable{
         Organizer.render(g);
         entityManager.getObjects().forEach((a)->a.render(g));
         buildingsManager.getObjects().forEach((a)->a.render(g));
-
         g.translate( + WorldManager.xPos(),+ WorldManager.yPos());
 
+        Minimap.render(g);
         FormationVisualitzer.render(g);
         MouseSelector.render(g);
-        SelectionVisualitzer.render(g);
-        Minimap.render(g);
         Resources.render(g);
         BuildManager.render(g);
+        SelectionVisualitzer.render(g);
     }
 
     public void mouseMoved(){
@@ -82,6 +79,7 @@ public class Sketch implements Representable{
 
     public void keyReleased(int key) {
         switch (key) {
+
 
             default:
         }
@@ -139,6 +137,7 @@ public class Sketch implements Representable{
 
                     if (MouseSelector.selectedItems().isEmpty()) {
                         SelectionVisualitzer.hide();
+                        Organizer.setMode(0);
                     } else {
                         SelectionVisualitzer.show();
                     }
@@ -164,10 +163,5 @@ public class Sketch implements Representable{
 
         KEYS_USED.add(nextRandom);
         return nextRandom;
-    }
-
-    //TODO: millorar aquesta PIPE!
-    public static void addEntity(Entity e) {
-        entityManager.add(e);
     }
 }

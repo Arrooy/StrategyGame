@@ -40,12 +40,16 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     }
 
     public void setSpawnPoint(double ox, double oy){
-        this.spawnPoint.setLocation(ox,oy);
+        if (ox >= x && ox <= x + sx && oy >= y && oy <= y + sy) {
+            this.spawnPoint.setLocation(getCenterX() + getWidth() * 1.5, getCenterY());
+        } else {
+            this.spawnPoint.setLocation(ox, oy);
+        }
     }
+
     public Point2D.Double getSpawnPoint(){
         return spawnPoint;
     }
-
 
     public void move(double x, double y){
         this.x = x + WorldManager.xPos();

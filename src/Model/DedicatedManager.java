@@ -1,7 +1,5 @@
 package Model;
 
-import Model.Managable;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,10 +15,11 @@ public class DedicatedManager <T extends Managable> extends Thread {
         this.start();
     }
 
-    public void add(T e){
+    public synchronized void add(T e) {
         objectsToManage.put(e.getKey(),e);
     }
-    public void remove(T e){
+
+    public synchronized void remove(T e) {
         objectsToManage.remove(e.getKey());
     }
 

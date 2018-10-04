@@ -1,6 +1,7 @@
 package Model.Unitats;
 
 import Model.DataContainers.ObjectInfo;
+import Model.Edificis.Building;
 import Model.*;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
@@ -9,6 +10,8 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static Model.Sketch.buildingsManager;
 
 
 public abstract class Entity implements Representable, Selectable, Mappable,Managable {
@@ -34,6 +37,8 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
     protected boolean selected;
     protected Map<Integer,Point2D.Double> objList;
     private Double key = Sketch.getNewKey();
+
+    boolean imFreeToMove = false;
 
     public Entity(double x, double y, double  maxSpeed, double maxAccel) {
         this.x = x;
@@ -89,8 +94,12 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
         return Math.sqrt(Math.pow(x-p.getX(),2) + Math.pow(y-p.getY(),2));
     }
 
+    private double dist(double x, double y, double x1, double y1) {
+        return Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2));
+    }
+
     @Override
-    public void update() {
+    public synchronized void update() {
         switch (estat){
             case 0:
                 if(!objList.isEmpty()){
@@ -102,6 +111,7 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
 
             case 1:
                 calculateMovement();
+                checkColisionsWithBuildings();
                 if(dist(x,y,actualObj) < THRESHOLD_STOP_DIST){
                     estat = 3;
                     lastMillis = System.currentTimeMillis();
@@ -135,6 +145,44 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
 
         ax = 0;
         ay = 0;
+    }
+
+    private void checkColisionsWithBuildings() {
+        for (Building b : buildingsManager.getObjects()) {
+            double cx = b.getCenterX();
+            double cy = b.getCenterY();
+            double size = b.getWidth() / 2 + s / 2;
+            double dist = dist(cx, cy, x, y);
+
+            if (dist <= size) {
+                if (imFreeToMove) {
+                    double dir = Math.atan2(cy - y, cx - x);
+
+                    size = size + 1;
+
+                    lastObjectiveID = 0;
+                    objectiveID = 0;
+                    objList.clear();
+
+                    ax = 0;
+                    ay = 0;
+                    vx = 0;
+                    vy = 0;
+
+                    x = cx - Math.cos(dir) * (size);
+                    y = cy - Math.sin(dir) * (size);
+
+
+                    //TODO: ALGORITME PER SOBREPASAR EL EDIFICI
+                    addObjective(new Point2D.Double(x, y));
+                    actualObj = new Point2D.Double(x, y);
+
+                    imFreeToMove = false;
+                }
+            } else {
+                imFreeToMove = true;
+            }
+        }
     }
 
     private boolean checkColisions(int numCol) {
@@ -243,11 +291,8 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
 
     public abstract long getTrainingTime();
 
-    public double getObjectiveX() {
-        return objList.get(lastObjectiveID).getX();
-    }
-
-    public double getObjectiveY() {
-        return objList.get(lastObjectiveID).getY();
+    public void setLocation(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 }

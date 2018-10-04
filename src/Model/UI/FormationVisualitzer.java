@@ -1,5 +1,7 @@
 package Model.UI;
 
+import Utils.AssetManager;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -8,6 +10,7 @@ import static Controlador.Controller.*;
 public class FormationVisualitzer {
 
     private static double y, w, h;
+    private static String[] IMAGE_NAMES = {"action_mine.png", "action_mine.png", "action_mine.png"};
 
     public static void init() {
 
@@ -45,8 +48,9 @@ public class FormationVisualitzer {
         double x = 3.75;
         double ay = y + 5;
         for (int i = 0; i < 3; i++) {
-            g.fill(new Rectangle2D.Double(x, ay, 75, 75));
+            g.drawImage(AssetManager.getImage(IMAGE_NAMES[i], 75, 75), (int) x, (int) ay, null);
             ay += 80;
         }
     }
+
 }

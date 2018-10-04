@@ -20,6 +20,7 @@ public class Organizer {
     private static LinkedList<Point2D.Double> points;
     private static long lastTimePointRegistered, registerPeriod;
     private static boolean mpMode1;
+    private static boolean mpMode2;
 
     private static int mode;
     private static boolean isFirstClick;
@@ -32,6 +33,8 @@ public class Organizer {
         lastTimePointRegistered = 0;
         mode = 0;
         isFirstClick = false;
+        mpMode1 = false;
+        mpMode2 = false;
 
         //Periode de mostreig ponderat en ms
         registerPeriod = 10;
@@ -40,11 +43,15 @@ public class Organizer {
     public static void mousePressed() {
         switch (mode) {
             case 0:
+                mpMode2 = false;
                 break;
             case 1:
                 mpMode1 = true;
+
+                mpMode2 = false;
                 break;
             case 2:
+                mpMode2 = true;
                 break;
         }
     }
@@ -53,6 +60,7 @@ public class Organizer {
         switch (mode) {
             case 0:
                 singlePointFormation();
+
                 break;
             case 1:
                 if (MouseSelector.hasSelection() && mpMode1) {
@@ -63,10 +71,10 @@ public class Organizer {
                 break;
             case 2:
                 if (!isFirstClick) {
-                    firstClick.setLocation(mouseX, mouseY);
+                    firstClick.setLocation(mouseX + WorldManager.xPos(), mouseY + WorldManager.yPos());
                     isFirstClick = true;
                 } else {
-                    secondClick.setLocation(mouseX, mouseY);
+                    secondClick.setLocation(mouseX + WorldManager.xPos(), mouseY + WorldManager.yPos());
                     if (MouseSelector.hasSelection()) {
                         doublePointFormation(firstClick.getX(), firstClick.getY(), secondClick.getX(), secondClick.getY());
                     }
@@ -78,10 +86,11 @@ public class Organizer {
 
     public static void render(Graphics2D g) {
 
-        g.setColor(Color.red);
-        g.fill(new Ellipse2D.Double(firstClick.getX(), firstClick.getY(), 2, 2));
-        g.fill(new Ellipse2D.Double(secondClick.getX(), secondClick.getY(), 2, 2));
-
+        if (mpMode2) {
+            g.setColor(Color.red);
+            g.fill(new Ellipse2D.Double(firstClick.getX(), firstClick.getY(), 2, 2));
+            g.fill(new Ellipse2D.Double(secondClick.getX(), secondClick.getY(), 2, 2));
+        }
         if (mpMode1) {
             g.setColor(new Color(86, 112, 123));
             g.setStroke(new BasicStroke(7));
@@ -221,7 +230,7 @@ public class Organizer {
 
         double angle = Math.atan2(fy - iy, fx - ix);
 
-        Entity entity = (Entity) MouseSelector.selectedItems().getFirst();
+        Entity entity = MouseSelector.getFirstEntity();
         int less = 6;
         int numberOfCars = (int) Math.floor(distance / (entity.getSizeX())) - less;
         double espaiSobrant = entity.getSizeX() * less;
@@ -229,13 +238,13 @@ public class Organizer {
 
         int aux = 0;
         int carCount = 1;
-
+        int size = MouseSelector.selectedItems().size();
         for (Selectable s : MouseSelector.selectedItems()) {
             if (s instanceof Entity) {
                 entity = (Entity) s;
 
-                if (advanced && numberOfCars > MouseSelector.selectedItems().size() - numberOfCars * aux) {
-                    ax += entity.getSizeX() / 2 * (numberOfCars - MouseSelector.selectedItems().size() + numberOfCars * aux) + entity.getSizeX();
+                if (advanced && numberOfCars > size - numberOfCars * aux) {
+                    ax += entity.getSizeX() / 2 * (numberOfCars - size + numberOfCars * aux) + entity.getSizeX();
                     advanced = false;
                 }
 
@@ -261,5 +270,4 @@ public class Organizer {
     private static double dist(double x, double y, double x1, double y1) {
         return Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
     }
-
 }

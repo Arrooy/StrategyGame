@@ -4,9 +4,9 @@ import Model.WorldManager;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
 
 import static Controlador.Controller.*;
+import static Model.Sketch.minimapManager;
 
 public class Minimap {
 
@@ -21,15 +21,12 @@ public class Minimap {
     private static double sizeProportion = 5.0;
     private static int strokeSize = 2;
 
-    private static LinkedList<Mappable> objInMap;
-
     public static void init() {
-        objInMap = new LinkedList<>();
         updateSize();
     }
 
     public static void add(Mappable m){
-        objInMap.add(m);
+        minimapManager.add(m);
     }
 
     public static void updateSize(){
@@ -58,13 +55,13 @@ public class Minimap {
         double yy = gameHeight - sy + WorldManager.yPos() * sy / heightToMap;
         g.draw(new Rectangle2D.Double(xx,yy,gameWidth * sx / widthToMap,gameHeight * sx / heightToMap));
 
-        for(Mappable m : objInMap){
+        minimapManager.getObjects().forEach((m) -> {
             double ax = m.getCenterX() * (sx - m.getMapSizeX()) / widthToMap;
             double ay = gameHeight - sy - 1 + m.getCenterY() * sy / heightToMap;
 
             g.setColor(m.getMapColor());
             g.fill(new Rectangle2D.Double(ax - m.getMapSizeX() / 2,ay, m.getMapSizeX(), m.getMapSizeY()));
-        }
+        });
     }
 
     private static double map(double value, double istart, double istop, double ostart, double ostop) {

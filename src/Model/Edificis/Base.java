@@ -3,13 +3,15 @@ package Model.Edificis;
 import Model.DataContainers.Action;
 import Model.DataContainers.ObjectInfo;
 import Model.DataContainers.RecuitAMiner;
-import Model.Sketch;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static Model.Sketch.entityManager;
 
 public class Base extends Building {
 
@@ -29,13 +31,20 @@ public class Base extends Building {
         objectInfo = new ObjectInfo(hp,10,10,10,10,10,"prev_castle.png",actions);
     }
 
+    private double dist(double x, double y, Point2D p) {
+        return Math.sqrt(Math.pow(x - p.getX(), 2) + Math.pow(y - p.getY(), 2));
+    }
     @Override
-    public void update() {
+    public synchronized void update() {
         if(!trainQueue.isEmpty()){
             TrainTask tt = trainQueue.peek();
             if (System.currentTimeMillis() - tt.getLastTrain() >= tt.getTrainingTime()) {
                 Entity aux = tt.getNextEntityToTrain();
-                Sketch.addEntity(aux);
+
+                double cx = getSpawnPoint().getX(), cy = getSpawnPoint().getY();
+                double dir = Math.atan2(cy - y, cx - x);
+                aux.setLocation(x + Math.cos(dir) * (sx + aux.getSizeX() + 2) / 2, y + Math.sin(dir) * (sy + aux.getSizeY() + 2) / 2);
+                entityManager.add(aux);
                 aux.addObjective(this.getSpawnPoint());
                 trainQueue.remove();
                 if (!trainQueue.isEmpty()) trainQueue.peek().initTrain();
@@ -47,6 +56,7 @@ public class Base extends Building {
     public void render(Graphics2D g) {
         g.setColor(selected ? c.darker() : c);
         g.fill(new Rectangle2D.Double(x - sx / 2.0,y - sy / 2.0,sx,sy));
+        // g.fill(new Ellipse2D.Double(x - sx / 2.0,y - sy / 2.0,sx,sy));
         if(selected){
             g.setColor(Color.blue);
             g.draw(new Rectangle2D.Double(spawnPoint.getX() - 2.5,spawnPoint.getY() - 2.5,5,5));
