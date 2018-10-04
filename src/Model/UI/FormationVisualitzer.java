@@ -10,7 +10,6 @@ import static Controlador.Controller.*;
 public class FormationVisualitzer {
 
     private static double y, w, h;
-    private static String[] IMAGE_NAMES = {"action_mine.png", "action_mine.png", "action_mine.png"};
 
     public static void init() {
 
@@ -48,7 +47,7 @@ public class FormationVisualitzer {
         double x = 3.75;
         double ay = y + 5;
         for (int i = 0; i < 3; i++) {
-            g.drawImage(AssetManager.getImage(IMAGE_NAMES[i], 75, 75), (int) x, (int) ay, null);
+            g.drawImage(AssetManager.getImage("formation_mode" + i + Organizer.isModeOn(i) + ".png", 75, 75), (int) x, (int) ay, null);
             ay += 80;
         }
     }

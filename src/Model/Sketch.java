@@ -34,7 +34,6 @@ public class Sketch implements Representable{
 
         entityManager.init();
         buildingsManager.init();
-        minimapManager.init();
 
         // buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
         for (int i = 0; i < 500; i++)
@@ -54,7 +53,7 @@ public class Sketch implements Representable{
 
         Organizer.render(g);
         entityManager.getObjects().forEach((a)->a.render(g));
-        buildingsManager.getObjects().forEach((a)->a.render(g));
+        buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
         g.translate( + WorldManager.xPos(),+ WorldManager.yPos());
 
         Minimap.render(g);
@@ -146,7 +145,6 @@ public class Sketch implements Representable{
         }else{
             //Boto dret
             Organizer.mouseReleased();
-
         }
     }
 

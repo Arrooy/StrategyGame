@@ -1,7 +1,9 @@
 package Model.Unitats;
 
 import Model.DataContainers.ObjectInfo;
+import Model.DataContainers.Trainable;
 import Model.Edificis.Building;
+import Model.Edificis.Mine;
 import Model.*;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static Model.Sketch.buildingsManager;
 
 
-public abstract class Entity implements Representable, Selectable, Mappable,Managable {
+public abstract class Entity implements Representable, Selectable, Mappable, Managable, Trainable {
 
     private final int THRESHOLD_STOP_TIME_F = 10;
     private final double THRESHOLD_STOP_DIST_F = 0.5;
@@ -98,8 +100,7 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
         return Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2));
     }
 
-    @Override
-    public synchronized void update() {
+    public void baseUpdate() {
         switch (estat){
             case 0:
                 if(!objList.isEmpty()){
@@ -145,6 +146,7 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
 
         ax = 0;
         ay = 0;
+        update();
     }
 
     private void checkColisionsWithBuildings() {
@@ -176,6 +178,10 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
                     //TODO: ALGORITME PER SOBREPASAR EL EDIFICI
                     addObjective(new Point2D.Double(x, y));
                     actualObj = new Point2D.Double(x, y);
+
+                    if (b instanceof Mine && this instanceof Miner) {
+                        ((Mine) b).harvest((Miner) this);
+                    }
 
                     imFreeToMove = false;
                 }
@@ -218,6 +224,9 @@ public abstract class Entity implements Representable, Selectable, Mappable,Mana
         }
         return flag;
     }
+
+    @Override
+    public abstract void update();
 
     @Override
     public abstract void render(Graphics2D g);

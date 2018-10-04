@@ -33,6 +33,11 @@ public class Miner extends Entity {
     }
 
     @Override
+    public void update() {
+
+    }
+
+    @Override
     public void render(Graphics2D g) {
         objList.forEach((n,p)->{
             g.setColor(Color.red);

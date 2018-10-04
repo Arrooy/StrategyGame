@@ -1,12 +1,16 @@
 package Model.Edificis;
 
 import Model.DataContainers.ObjectInfo;
+import Model.DataContainers.TrainTask;
+import Model.DataContainers.Trainable;
 import Model.*;
 import Model.UI.Mappable;
 import Model.Unitats.Entity;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class Building implements Representable, Selectable, Mappable, Managable{
 
@@ -20,6 +24,8 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     protected Color c = new Color(255,0,255);
     private Double key = Sketch.getNewKey();
 
+    protected ConcurrentLinkedQueue<TrainTask<Entity>> trainQueue;
+
     public Building(double x, double y, double sx, double sy, int hp, int price) {
         this.x = x;
         this.y = y;
@@ -27,7 +33,8 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         this.sy = sy;
         this.hp = hp;
         this.price = price;
-        this.spawnPoint = new Point2D.Double(0,0);
+        this.spawnPoint = new Point2D.Double(x, y);
+        trainQueue = new ConcurrentLinkedQueue<>();
     }
 
     public int getPrice() {
@@ -37,6 +44,55 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     public synchronized boolean getDamage(int damage){
         hp -= damage;
         return hp <= 0;
+    }
+
+    @Override
+    public abstract void update();
+
+    @Override
+    public abstract void render(Graphics2D g);
+
+    public abstract void trainComplete(Trainable t);
+
+    public void baseUpdate() {
+        update();
+        if (!trainQueue.isEmpty()) {
+            TrainTask tt = trainQueue.peek();
+            if (System.currentTimeMillis() - tt.getLastTrain() >= tt.getTrainingTime()) {
+                trainComplete(tt.getTrainResult());
+                trainQueue.remove();
+                if (!trainQueue.isEmpty()) trainQueue.peek().initTrain();
+            }
+        }
+    }
+
+    public void baseRender(Graphics2D g) {
+        render(g);
+        if (!trainQueue.isEmpty()) {
+            double maxTrainSize = sx + 30;
+            int height = 5;
+            double gap = sy / 2.0 + 5;
+
+            TrainTask aux = trainQueue.peek();
+            long trainingTime = aux.getTrainingTime();
+            long lastTrain = aux.getLastTrain();
+
+            g.setColor(Color.gray);
+            g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, maxTrainSize, height));
+
+            g.setColor(Color.blue);
+            g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, (System.currentTimeMillis() - lastTrain) * maxTrainSize / trainingTime, height));
+
+            g.setFont(new Font("Arial", Font.PLAIN, 10));
+            FontMetrics fm = g.getFontMetrics();
+            String a = "" + trainQueue.size();
+            g.setColor(Color.black);
+            g.drawString(a, (float) (x - fm.stringWidth(a)), (float) (y - gap - 10));
+        }
+    }
+
+    public void train(Trainable t) {
+        trainQueue.add(new TrainTask(t));
     }
 
     public void setSpawnPoint(double ox, double oy){
@@ -63,12 +119,6 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     public double getHeigth(){
         return sy;
     }
-
-    @Override
-    public abstract void update();
-
-    @Override
-    public abstract void render(Graphics2D g);
 
     @Override
     public double getCenterX() {
@@ -132,31 +182,4 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         return key;
     }
 
-
-    protected class TrainTask {
-        private long trainingTime, lastTrain;
-        private Entity nextEntityToTrain;
-
-        protected TrainTask(Entity nextEntityToTrain) {
-            this.nextEntityToTrain = nextEntityToTrain;
-            this.trainingTime = nextEntityToTrain.getTrainingTime();
-            lastTrain = System.currentTimeMillis();
-        }
-
-        protected long getTrainingTime() {
-            return trainingTime;
-        }
-
-        protected Entity getNextEntityToTrain() {
-            return nextEntityToTrain;
-        }
-
-        public long getLastTrain() {
-            return lastTrain;
-        }
-
-        public void initTrain() {
-            lastTrain = System.currentTimeMillis();
-        }
-    }
 }

@@ -19,6 +19,7 @@ public class Organizer {
 
     private static LinkedList<Point2D.Double> points;
     private static long lastTimePointRegistered, registerPeriod;
+
     private static boolean mpMode1;
     private static boolean mpMode2;
 
@@ -139,6 +140,7 @@ public class Organizer {
     }
 
     //MODE 1
+    //TODO - BUG: SI NO HI HA SELECCIO TÉ UN COMPORTAMENT EXTRANY
     private static void freeMovementFormation() {
         int size = MouseSelector.selectedItems().size();
         double[][] points = Organizer.getPositions(size);
@@ -269,5 +271,9 @@ public class Organizer {
 
     private static double dist(double x, double y, double x1, double y1) {
         return Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
+    }
+
+    public static String isModeOn(int i) {
+        return mode == i ? "1" : "0";
     }
 }

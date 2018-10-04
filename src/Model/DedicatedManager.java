@@ -10,8 +10,11 @@ public class DedicatedManager <T extends Managable> extends Thread {
 
     private Map<Double,T> objectsToManage;
 
-    public void init(){
+    public DedicatedManager() {
         objectsToManage = new ConcurrentHashMap<>();
+    }
+
+    public void init() {
         this.start();
     }
 
@@ -26,7 +29,7 @@ public class DedicatedManager <T extends Managable> extends Thread {
     @Override
     public void run() {
         while(true){
-            objectsToManage.forEach((id,e)->e.update());
+            objectsToManage.forEach((id, e) -> e.baseUpdate());
             try {
                 sleep(UPDATE_DELAY);
             } catch (InterruptedException e) {
