@@ -1,6 +1,5 @@
 package Model;
 
-import Model.Edificis.Building;
 import Model.Unitats.Entity;
 
 import java.awt.*;
@@ -29,7 +28,8 @@ public class MouseSelector {
     public static void add(Selectable s){
         selectables.add(s);
     }
-    public static void remove(Building blueprint) {
+
+    public static void remove(Managable blueprint) {
         selectables.remove(blueprint);
     }
 

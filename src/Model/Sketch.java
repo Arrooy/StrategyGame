@@ -1,11 +1,13 @@
 package Model;
 
 import Model.Edificis.Building;
+import Model.Edificis.Mine;
 import Model.UI.*;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
@@ -35,9 +37,11 @@ public class Sketch implements Representable{
         entityManager.init();
         buildingsManager.init();
 
-        // buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 1000, 0));
-        for (int i = 0; i < 500; i++)
-            entityManager.add(new Miner(Math.random() * gameWidth, Math.random() * gameHeight, 12, 0.9));
+
+        for (int i = 0; i < 1; i++)
+            buildingsManager.add(new Mine(Math.random() * gameWidth, Math.random() * gameHeight, 30, 30, 100, 0));
+
+        entityManager.add(new Miner(Math.random() * gameWidth, Math.random() * gameHeight, 12, 0.9));
     }
     @Override
     public void update() {
@@ -52,8 +56,8 @@ public class Sketch implements Representable{
         g.translate( - WorldManager.xPos(),- WorldManager.yPos());
 
         Organizer.render(g);
-        entityManager.getObjects().forEach((a)->a.render(g));
         buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
+        entityManager.getObjects().forEach((a)->a.render(g));
         g.translate( + WorldManager.xPos(),+ WorldManager.yPos());
 
         Minimap.render(g);
@@ -79,7 +83,9 @@ public class Sketch implements Representable{
     public void keyReleased(int key) {
         switch (key) {
 
+            case KeyEvent.VK_S:
 
+                break;
             default:
         }
     }

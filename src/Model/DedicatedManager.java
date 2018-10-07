@@ -24,6 +24,7 @@ public class DedicatedManager <T extends Managable> extends Thread {
 
     public synchronized void remove(T e) {
         objectsToManage.remove(e.getKey());
+        MouseSelector.remove(e);
     }
 
     @Override

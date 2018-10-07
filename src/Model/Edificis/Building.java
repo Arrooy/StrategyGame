@@ -26,6 +26,10 @@ public abstract class Building implements Representable, Selectable, Mappable, M
 
     protected ConcurrentLinkedQueue<TrainTask<Entity>> trainQueue;
 
+    protected ObjectInfo objectInfo;
+
+    protected boolean isAlive;
+
     public Building(double x, double y, double sx, double sy, int hp, int price) {
         this.x = x;
         this.y = y;
@@ -35,6 +39,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         this.price = price;
         this.spawnPoint = new Point2D.Double(x, y);
         trainQueue = new ConcurrentLinkedQueue<>();
+        isAlive = true;
     }
 
     public int getPrice() {
@@ -43,6 +48,8 @@ public abstract class Building implements Representable, Selectable, Mappable, M
 
     public synchronized boolean getDamage(int damage){
         hp -= damage;
+        objectInfo.updateHp(hp);
+        if (hp <= 0) isAlive = false;
         return hp <= 0;
     }
 
@@ -52,30 +59,42 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     @Override
     public abstract void render(Graphics2D g);
 
-    public abstract void trainComplete(Trainable t);
+    public abstract void trainCompleted(Trainable t);
 
     public void baseUpdate() {
         update();
+        trainProgressBar();
+    }
+
+    public void baseRender(Graphics2D g) {
+        render(g);
+        trainProgressBar(g);
+    }
+
+    public void train(Trainable t) {
+        trainQueue.add(new TrainTask(t));
+    }
+
+    public void trainProgressBar() {
         if (!trainQueue.isEmpty()) {
             TrainTask tt = trainQueue.peek();
             if (System.currentTimeMillis() - tt.getLastTrain() >= tt.getTrainingTime()) {
-                trainComplete(tt.getTrainResult());
+                trainCompleted(tt.getTrainResult());
                 trainQueue.remove();
                 if (!trainQueue.isEmpty()) trainQueue.peek().initTrain();
             }
         }
     }
 
-    public void baseRender(Graphics2D g) {
-        render(g);
+    public void trainProgressBar(Graphics2D g) {
         if (!trainQueue.isEmpty()) {
+            TrainTask aux = trainQueue.peek();
             double maxTrainSize = sx + 30;
             int height = 5;
             double gap = sy / 2.0 + 5;
-
-            TrainTask aux = trainQueue.peek();
             long trainingTime = aux.getTrainingTime();
             long lastTrain = aux.getLastTrain();
+
 
             g.setColor(Color.gray);
             g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, maxTrainSize, height));
@@ -89,10 +108,6 @@ public abstract class Building implements Representable, Selectable, Mappable, M
             g.setColor(Color.black);
             g.drawString(a, (float) (x - fm.stringWidth(a)), (float) (y - gap - 10));
         }
-    }
-
-    public void train(Trainable t) {
-        trainQueue.add(new TrainTask(t));
     }
 
     public void setSpawnPoint(double ox, double oy){
@@ -119,6 +134,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     public double getHeigth(){
         return sy;
     }
+
 
     @Override
     public double getCenterX() {
@@ -182,4 +198,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         return key;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
 }

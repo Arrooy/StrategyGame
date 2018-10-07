@@ -4,14 +4,11 @@ import Model.DataContainers.ObjectInfo;
 import Model.DataContainers.Trainable;
 import Model.MouseSelector;
 import Model.UI.Minimap;
-import Model.Unitats.Miner;
-import Utils.AssetManager;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class Mine extends Building {
-
-    private ObjectInfo objectInfo;
 
 
     public Mine(double x, double y, double sx, double sy, int hp, int price) {
@@ -19,11 +16,11 @@ public class Mine extends Building {
 
         Minimap.add(this);
         MouseSelector.add(this);
-        objectInfo = new ObjectInfo(hp, 1000, 10, 10, 10, 10, "mine.png");
+        objectInfo = new ObjectInfo(hp, hp, 10, 10, 10, 10, "mine.png");
     }
 
     @Override
-    public void trainComplete(Trainable t) {
+    public void trainCompleted(Trainable t) {
 
     }
 
@@ -34,7 +31,10 @@ public class Mine extends Building {
 
     @Override
     public void render(Graphics2D g) {
-        g.drawImage(AssetManager.getImage("mine.png", (int) sx, (int) sy), (int) x, (int) y, null);
+        //g.drawImage(AssetManager.getImage("mine.png", (int) sx, (int) sy), (int) x, (int) y, null);
+
+        g.setColor(new Color(0xC8AC33));
+        g.fill(new Rectangle2D.Double(x - sx / 2, y - sy / 2, sx, sy));
     }
 
     @Override
@@ -42,7 +42,4 @@ public class Mine extends Building {
         return objectInfo;
     }
 
-    public void harvest(Miner miner) {
-
-    }
 }

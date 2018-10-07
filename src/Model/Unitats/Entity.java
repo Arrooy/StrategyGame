@@ -2,11 +2,13 @@ package Model.Unitats;
 
 import Model.DataContainers.ObjectInfo;
 import Model.DataContainers.Trainable;
+import Model.Edificis.Base;
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
 import Model.*;
 import Model.UI.Mappable;
 import Model.UI.Minimap;
+import Model.UI.Resources;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -35,12 +37,13 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     private double maxSpeed,vx,vy,ax,ay,maxAccel;
     private int objectiveID,lastObjectiveID;
     //Protected vars
-    protected double s = 5,x,y;
+    protected double s = 11, x, y;
     protected boolean selected;
     protected Map<Integer,Point2D.Double> objList;
     private Double key = Sketch.getNewKey();
 
     boolean imFreeToMove = false;
+    protected boolean cantMoveImLoading = false;
 
     public Entity(double x, double y, double  maxSpeed, double maxAccel) {
         this.x = x;
@@ -96,7 +99,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
         return Math.sqrt(Math.pow(x-p.getX(),2) + Math.pow(y-p.getY(),2));
     }
 
-    private double dist(double x, double y, double x1, double y1) {
+    protected double dist(double x, double y, double x1, double y1) {
         return Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2));
     }
 
@@ -111,7 +114,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                 break;
 
             case 1:
-                calculateMovement();
+                if (!cantMoveImLoading) calculateMovement();
                 checkColisionsWithBuildings();
                 if(dist(x,y,actualObj) < THRESHOLD_STOP_DIST){
                     estat = 3;
@@ -179,8 +182,12 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                     addObjective(new Point2D.Double(x, y));
                     actualObj = new Point2D.Double(x, y);
 
-                    if (b instanceof Mine && this instanceof Miner) {
-                        ((Mine) b).harvest((Miner) this);
+                    if (this instanceof Miner) {
+                        if (b instanceof Mine) {
+                            ((Miner) this).harvest(((Mine) b));
+                        } else if (b instanceof Base) {
+                            Resources.add(((Miner) this).getGold());
+                        }
                     }
 
                     imFreeToMove = false;

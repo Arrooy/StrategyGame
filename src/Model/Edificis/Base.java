@@ -15,7 +15,7 @@ import static Model.Sketch.entityManager;
 public class Base extends Building {
 
     public static final int price = 200;
-    private ObjectInfo objectInfo;
+
 
     public Base(double x, double y, double sx, double sy, int hp) {
         super(x, y, sx, sy, hp, price);
@@ -30,11 +30,11 @@ public class Base extends Building {
         return Math.sqrt(Math.pow(x - p.getX(), 2) + Math.pow(y - p.getY(), 2));
     }
     @Override
-    public synchronized void update() {
+    public void update() {
 
     }
 
-    public void trainComplete(Trainable t) {
+    public void trainCompleted(Trainable t) {
         Entity aux = (Entity) t;
         double cx = getSpawnPoint().getX(), cy = getSpawnPoint().getY();
         double dir = Math.atan2(cy - y, cx - x);

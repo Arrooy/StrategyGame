@@ -109,7 +109,7 @@ public class Organizer {
 
     public static void update() {
         if (mpMode1 && System.currentTimeMillis() - lastTimePointRegistered > registerPeriod) {
-            Organizer.addPoint(mouseX, mouseY);
+            Organizer.addPoint(mouseX + WorldManager.xPos(), mouseY + WorldManager.yPos());
             lastTimePointRegistered = System.currentTimeMillis();
         }
     }

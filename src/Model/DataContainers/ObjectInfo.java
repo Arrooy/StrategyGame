@@ -95,4 +95,7 @@ public class ObjectInfo {
         return nf.format(vel);
     }
 
+    public void updateHp(int hp) {
+        this.hp = hp;
+    }
 }
