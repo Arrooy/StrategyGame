@@ -1,7 +1,7 @@
 package Controlador;
 
 import Model.Sketch;
-import Model.UI.Minimap;
+import Model.UI.Map.Minimap;
 import View.Vista;
 
 import javax.swing.event.MouseInputListener;

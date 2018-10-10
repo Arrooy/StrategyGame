@@ -1,8 +1,8 @@
-package Model;
+package Model.MassiveListManager;
 
 public interface Managable {
 
-    Double getKey();
+    double getKey();
 
     void baseUpdate();
 }

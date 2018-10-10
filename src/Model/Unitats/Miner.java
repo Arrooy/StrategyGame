@@ -1,11 +1,13 @@
 package Model.Unitats;
 
-import Model.DataContainers.Action;
-import Model.DataContainers.BuildABaseAction;
+import Model.Actions.Action;
+import Model.Actions.BuildABase;
+import Model.CShape;
 import Model.DataContainers.ObjectInfo;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
+import Utils.TeamColors;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -17,15 +19,19 @@ import static Model.Sketch.minimapManager;
 
 public class Miner extends Entity {
 
+    public static final int price = 100;
+    private static final int TRAINING_TIME = 500;
+    private static final long HARVEST_TIME = 2000;
+    private static final int HARVEST_AMOUNT = 10;
+
     private double attSpeed = 1;
     private int def = 0;
-    private int hp = 2;
-    private int maxHp = 2;
-    private int dmg = 0;
+    private static final int maxHp = 1000;
+    private int dmg = 1;
     private String img;
     private ObjectInfo objectInfo;
 
-    private Color c = new Color(50,180,80);;
+    private Color c;
 
     private Action[] actions;
 
@@ -34,41 +40,38 @@ public class Miner extends Entity {
     private Mine lastMine;
 
     private int goldInHand;
-    private long harvestTime = 2000;
-    private int harvestAmount = 10;
 
-    public Miner(double x, double y, double maxSpeed, double maxAccel) {
-        super(x, y, maxSpeed, maxAccel);
+    public Miner(double x, double y, double maxSpeed, double maxAccel, int team) {
+        super(x, y, maxSpeed, maxAccel, maxHp, team);
 
         actions = new Action[1];
-        actions[0] = new BuildABaseAction(this);
-
+        actions[0] = new BuildABase(this);
         img = "prev_miner.png";
 
         goldInHand = 0;
-        objectInfo = new ObjectInfo(hp,maxHp,dmg,def,attSpeed,maxSpeed, img,actions);
+        c = TeamColors.getMyColor(team);
+
+        objectInfo = new ObjectInfo(maxHp, maxHp, dmg, def, attSpeed, maxSpeed, img, actions);
         lastHarvest = 0;
     }
 
     @Override
     public void update() {
-        if (actualMine != null && System.currentTimeMillis() - lastHarvest >= harvestTime) {
+        if (actualMine != null && System.currentTimeMillis() - lastHarvest >= HARVEST_TIME) {
             if (actualMine.isAlive()) {
                 int hp = actualMine.getInfo().getHp();
 
-                if (actualMine.getDamage(harvestAmount)) {
+                if (actualMine.getDamage(HARVEST_AMOUNT)) {
                     goldInHand = hp;
                     buildingsManager.remove(actualMine);
                     minimapManager.remove(actualMine);
-
-
                     lastMine = null;
                 } else {
                     if (objList.isEmpty()) {
                         double minDist = gameWidth * 2;
                         Base minDistBase = null;
                         for (Building b : buildingsManager.getObjects()) {
-                            if (b instanceof Base) {
+                            if (b instanceof Base && b.getTeam() == team) {
                                 double distance = dist(b.getCenterX(), b.getCenterY(), x, y);
                                 if (distance < minDist) {
                                     minDist = distance;
@@ -80,7 +83,7 @@ public class Miner extends Entity {
                             addObjective(new Point2D.Double(minDistBase.getCenterX(), minDistBase.getCenterY()));
                         }
                     }
-                    goldInHand = harvestAmount;
+                    goldInHand = HARVEST_AMOUNT;
                     lastMine = actualMine;
                 }
 
@@ -100,7 +103,7 @@ public class Miner extends Entity {
         });
 
         g.setColor(selected ? c.darker() : c);
-        g.fill(new Rectangle2D.Double(x - s / 2,y - s/2,s,s));
+        g.fill(CShape.miner(x, y, s));
 
         if (goldInHand != 0) {
             g.setColor(new Color(200, 171, 0));
@@ -111,7 +114,7 @@ public class Miner extends Entity {
             double maxTrainSize = s + 30;
             int height = 5;
             double gap = s / 2.0 + 5;
-            long trainingTime = harvestTime;
+            long trainingTime = HARVEST_TIME;
             long lastTrain = lastHarvest;
 
 
@@ -135,7 +138,7 @@ public class Miner extends Entity {
 
     @Override
     public long getTrainingTime() {
-        return 1000;
+        return TRAINING_TIME;
     }
 
     public void harvest(Mine mine) {
@@ -149,8 +152,10 @@ public class Miner extends Entity {
     public int getGold() {
         int aux = goldInHand;
         goldInHand = 0;
-        if (lastMine != null && lastMine.isAlive())
+
+        if (lastMine != null && lastMine.isAlive()) {
             addObjective(new Point2D.Double(lastMine.getCenterX(), lastMine.getCenterY()));
+        }
         return aux;
     }
 }

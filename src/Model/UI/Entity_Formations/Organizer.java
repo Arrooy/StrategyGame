@@ -1,10 +1,11 @@
-package Model.UI;
+package Model.UI.Entity_Formations;
 
+import Model.CameraControl.WorldManager;
 import Model.Edificis.Building;
-import Model.MouseSelector;
-import Model.Selectable;
+import Model.UI.Map.Minimap;
+import Model.UI.Mouse_Area_Selection.MouseSelector;
+import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.Unitats.Entity;
-import Model.WorldManager;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

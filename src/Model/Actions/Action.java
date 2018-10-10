@@ -1,6 +1,6 @@
-package Model.DataContainers;
+package Model.Actions;
 
-import Model.Selectable;
+import Model.UI.Mouse_Area_Selection.Selectable;
 import Utils.AssetManager;
 
 import java.awt.*;

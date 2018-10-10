@@ -1,6 +1,6 @@
-package Model.UI;
+package Model.UI.Map;
 
-import Model.Managable;
+import Model.MassiveListManager.Managable;
 
 import java.awt.*;
 

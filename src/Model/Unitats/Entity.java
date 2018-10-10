@@ -1,14 +1,19 @@
 package Model.Unitats;
 
+import Model.CameraControl.WorldManager;
 import Model.DataContainers.ObjectInfo;
-import Model.DataContainers.Trainable;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
-import Model.*;
-import Model.UI.Mappable;
-import Model.UI.Minimap;
+import Model.MassiveListManager.Managable;
+import Model.Representable;
+import Model.Sketch;
+import Model.UI.Map.Mappable;
+import Model.UI.Map.Minimap;
+import Model.UI.Mouse_Area_Selection.MouseSelector;
+import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.UI.Resources;
+import Model.Unitats.Unit_Training.Trainable;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -45,12 +50,20 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     boolean imFreeToMove = false;
     protected boolean cantMoveImLoading = false;
 
-    public Entity(double x, double y, double  maxSpeed, double maxAccel) {
+    protected int team;
+    protected int hp;
+
+    protected Shape shape;
+
+    public Entity(double x, double y, double maxSpeed, double maxAccel, int hp, int team) {
         this.x = x;
         this.y = y;
+        this.hp = hp;
         objList = new ConcurrentHashMap<>();
         this.maxSpeed = maxSpeed;
         this.maxAccel = maxAccel;
+
+        this.team = team;
 
         selected = false;
         estat = 0;
@@ -63,8 +76,23 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
         Minimap.add(this);
     }
 
+    public boolean getDamage(int damageAmount) {
+        hp -= damageAmount;
+        this.getInfo().updateHp(hp);
+        return hp <= 0;
+    }
+
+    public int calculateRealDamage(int baseDamage) {
+        int realDamage = baseDamage - this.getInfo().getArmor();
+        return realDamage <= 0 ? 1 : realDamage;
+    }
+
     public void addObjective(Point2D.Double o){
         objList.put(objectiveID++,o);
+    }
+
+    public void updateActualObjective(Point2D.Double o) {
+        objList.get(objectiveID - 1).setLocation(o);
     }
 
     private void calculateMovement(){
@@ -102,6 +130,11 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     protected double dist(double x, double y, double x1, double y1) {
         return Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2));
     }
+
+    protected double dist(Entity a, Entity b) {
+        return Math.sqrt(Math.pow(a.getCenterX() - b.getCenterX(), 2) + Math.pow(a.getCenterY() - b.getCenterY(), 2));
+    }
+
 
     public void baseUpdate() {
         switch (estat){
@@ -301,7 +334,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     @Override
     public abstract Color getMapColor();
 
-    public Double getKey() {
+    public double getKey() {
         return key;
     }
 
@@ -310,5 +343,9 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     public void setLocation(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public int getTeam() {
+        return team;
     }
 }

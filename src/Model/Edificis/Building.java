@@ -1,27 +1,32 @@
 package Model.Edificis;
 
+import Model.CameraControl.WorldManager;
 import Model.DataContainers.ObjectInfo;
-import Model.DataContainers.TrainTask;
-import Model.DataContainers.Trainable;
-import Model.*;
-import Model.UI.Mappable;
+import Model.MassiveListManager.Managable;
+import Model.Representable;
+import Model.Sketch;
+import Model.UI.Map.Mappable;
+import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.Unitats.Entity;
+import Model.Unitats.Unit_Training.TrainTask;
+import Model.Unitats.Unit_Training.Trainable;
+import Utils.TeamColors;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public abstract class Building implements Representable, Selectable, Mappable, Managable{
+public abstract class Building implements Representable, Selectable, Mappable, Managable {
 
-    protected double x,y,sx,sy;
+    protected double x, y, sx, sy;
     protected int hp;
     protected int price;
 
     protected Point2D.Double spawnPoint;
 
     protected boolean selected = false;
-    protected Color c = new Color(255,0,255);
+    protected Color c;
     private Double key = Sketch.getNewKey();
 
     protected ConcurrentLinkedQueue<TrainTask<Entity>> trainQueue;
@@ -29,8 +34,10 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     protected ObjectInfo objectInfo;
 
     protected boolean isAlive;
+    protected Shape shape;
+    private int team;
 
-    public Building(double x, double y, double sx, double sy, int hp, int price) {
+    public Building(double x, double y, double sx, double sy, int hp, int price, int team) {
         this.x = x;
         this.y = y;
         this.sx = sx;
@@ -38,6 +45,8 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         this.hp = hp;
         this.price = price;
         this.spawnPoint = new Point2D.Double(x, y);
+        this.team = team;
+        this.c = TeamColors.getMyColor(team);
         trainQueue = new ConcurrentLinkedQueue<>();
         isAlive = true;
     }
@@ -46,7 +55,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         return price;
     }
 
-    public synchronized boolean getDamage(int damage){
+    public synchronized boolean getDamage(int damage) {
         hp -= damage;
         objectInfo.updateHp(hp);
         if (hp <= 0) isAlive = false;
@@ -106,11 +115,11 @@ public abstract class Building implements Representable, Selectable, Mappable, M
             FontMetrics fm = g.getFontMetrics();
             String a = "" + trainQueue.size();
             g.setColor(Color.black);
-            g.drawString(a, (float) (x - fm.stringWidth(a)), (float) (y - gap - 10));
+            g.drawString(a, (float) (x - fm.stringWidth(a) / 2), (float) (y - gap - 10));
         }
     }
 
-    public void setSpawnPoint(double ox, double oy){
+    public void setSpawnPoint(double ox, double oy) {
         if (ox >= x && ox <= x + sx && oy >= y && oy <= y + sy) {
             this.spawnPoint.setLocation(getCenterX() + getWidth() * 1.5, getCenterY());
         } else {
@@ -118,20 +127,20 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         }
     }
 
-    public Point2D.Double getSpawnPoint(){
+    public Point2D.Double getSpawnPoint() {
         return spawnPoint;
     }
 
-    public void move(double x, double y){
+    public void move(double x, double y) {
         this.x = x + WorldManager.xPos();
         this.y = y + WorldManager.yPos();
     }
 
-    public double getWidth(){
+    public double getWidth() {
         return sx;
     }
 
-    public double getHeigth(){
+    public double getHeigth() {
         return sy;
     }
 
@@ -194,11 +203,15 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     @Override
     public abstract ObjectInfo getInfo();
 
-    public Double getKey() {
+    public double getKey() {
         return key;
     }
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public int getTeam() {
+        return team;
     }
 }

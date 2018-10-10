@@ -1,7 +1,9 @@
-package Model;
+package Utils;
 
 import Model.Edificis.Building;
-import Model.UI.Minimap;
+import Model.UI.Map.Minimap;
+import Model.UI.Mouse_Area_Selection.MouseSelector;
+import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.UI.Resources;
 
 import java.awt.*;
@@ -22,7 +24,6 @@ public class BuildManager {
     public static void init(){
         readyToBuild = false;
         c = badColor;
-
     }
 
     public static void initBuild(Building building){
@@ -45,7 +46,7 @@ public class BuildManager {
     }
 
     //Burrada de condicions.
-    private static boolean almostInsideTheSelectionArea(Selectable s,int quadrante){
+    private static boolean almostInsideTheSelectionArea(Selectable s, int quadrante) {
         return  MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getLX(),s.getUY(),quadrante) ||
                 MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getLX(),s.getLY(),quadrante) ||
                 MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getRX(),s.getUY(),quadrante) ||

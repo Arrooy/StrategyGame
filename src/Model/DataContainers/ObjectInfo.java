@@ -1,5 +1,6 @@
 package Model.DataContainers;
 
+import Model.Actions.Action;
 import Utils.AssetManager;
 
 import java.awt.*;

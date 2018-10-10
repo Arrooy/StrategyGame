@@ -1,26 +1,23 @@
-package Model;
-
-
-//Gestiona moviment de la camara, el tamany del mapa
-
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
+package Model.CameraControl;
 
 import static Controlador.Controller.*;
 
+//Gestiona moviment de la camara, el tamany del mapa
+//TODO: Afegir zoom.
+
 public class WorldManager {
 
-    private static double maxScrollHorizontal,maxScrollVertical;
+    private static int maxScrollHorizontal, maxScrollVertical;
 
     private final static int margin = 10;
     private final static int cameraSpeed = 10;
     private static int xPos,yPos;
 
     public static void init() {
-        maxScrollHorizontal = 300;
-        maxScrollVertical = 300;
-        xPos = 0;
-        yPos = 0;
+        maxScrollHorizontal = (int) (gameWidth / 1.5);
+        maxScrollVertical = gameHeight * 3;
+        xPos = maxScrollHorizontal / 2;
+        yPos = maxScrollVertical;
     }
 
 

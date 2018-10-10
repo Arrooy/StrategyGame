@@ -1,5 +1,6 @@
-package Model;
+package Model.UI.Mouse_Area_Selection;
 
+import Model.MassiveListManager.Managable;
 import Model.Unitats.Entity;
 
 import java.awt.*;
@@ -31,6 +32,7 @@ public class MouseSelector {
 
     public static void remove(Managable blueprint) {
         selectables.remove(blueprint);
+        selected.remove(blueprint);
     }
 
     public static void addToSelection(Selectable s){

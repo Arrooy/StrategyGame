@@ -1,9 +1,7 @@
-package Model.UI;
+package Model.UI.Mouse_Area_Selection;
 
-import Model.DataContainers.Action;
+import Model.Actions.Action;
 import Model.DataContainers.ObjectInfo;
-import Model.MouseSelector;
-import Model.Selectable;
 import Utils.AssetManager;
 
 import java.awt.*;

@@ -1,4 +1,4 @@
-package Model.UI;
+package Model.UI.Entity_Formations;
 
 import Utils.AssetManager;
 

@@ -1,6 +1,6 @@
-package Model.UI;
+package Model.UI.Map;
 
-import Model.WorldManager;
+import Model.CameraControl.WorldManager;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -33,7 +33,7 @@ public class Minimap {
         sx = gameHeight / sizeProportion;
         sy = sx;
         widthToMap = gameWidth + WorldManager.getMaxScrollHorizontal();
-        heightToMap = gameHeight + WorldManager.getMaxScrollHorizontal();
+        heightToMap = gameHeight + WorldManager.getMaxScrollVertical();
     }
 
     public static boolean isMouseOver() {

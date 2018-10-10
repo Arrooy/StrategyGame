@@ -107,6 +107,8 @@ public class AssetManager {
         return imatges.get(nom) != null ? imatges.get(nom) : imatges.get("default.png");
     }
 
+
+    //TODO: BAD IDEA!!!!!!!! RESIZE IN A LOOP IS FUKING BAD
     /**
      * Retorna una imatge de la UI escalada
      * @param nom nom de la imatge que es vol obtenir

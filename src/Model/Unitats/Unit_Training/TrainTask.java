@@ -1,4 +1,4 @@
-package Model.DataContainers;
+package Model.Unitats.Unit_Training;
 
 
 public class TrainTask<T extends Trainable> {

@@ -1,22 +1,26 @@
 package Model.Edificis;
 
+import Model.CShape;
 import Model.DataContainers.ObjectInfo;
-import Model.DataContainers.Trainable;
-import Model.MouseSelector;
-import Model.UI.Minimap;
+import Model.UI.Map.Minimap;
+import Model.UI.Mouse_Area_Selection.MouseSelector;
+import Model.Unitats.Unit_Training.Trainable;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public class Mine extends Building {
 
+    public static final int PRICE = 0;
+    public static final int SX = 20;
+    public static final int SY = 20;
+    public static final int HP = 10000;
 
-    public Mine(double x, double y, double sx, double sy, int hp, int price) {
-        super(x, y, sx, sy, hp, price);
+    public Mine(double x, double y) {
+        super(x, y, SX, SY, HP, PRICE, 0);
 
         Minimap.add(this);
         MouseSelector.add(this);
-        objectInfo = new ObjectInfo(hp, hp, 10, 10, 10, 10, "mine.png");
+        objectInfo = new ObjectInfo(HP, HP, 0, 0, 0, 0, "mine.png");
     }
 
     @Override
@@ -31,10 +35,9 @@ public class Mine extends Building {
 
     @Override
     public void render(Graphics2D g) {
-        //g.drawImage(AssetManager.getImage("mine.png", (int) sx, (int) sy), (int) x, (int) y, null);
 
-        g.setColor(new Color(0xC8AC33));
-        g.fill(new Rectangle2D.Double(x - sx / 2, y - sy / 2, sx, sy));
+        g.setColor(c);
+        g.fill(CShape.mine(x, y, sx, sy));
     }
 
     @Override

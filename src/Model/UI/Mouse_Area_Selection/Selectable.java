@@ -1,4 +1,4 @@
-package Model;
+package Model.UI.Mouse_Area_Selection;
 
 import Model.DataContainers.ObjectInfo;
 
