@@ -12,6 +12,16 @@ import java.awt.geom.Rectangle2D;
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
 
+/**
+ * Gestor de construccion del juego.
+ * -> Permite construir un edificio
+ * -> Detecta en realTime si se puede construir el edificio (Localizacion del edificio no obstruida)
+ * -> Permite ver una preview del edificio a construir
+ * -> Si se confirma la construccion, se resta el importe a los recursos
+ */
+
+//TODO: Restar el importe de la construcccion a los recursos del equipo que ha construido algo!
+
 public class BuildManager {
 
     private final static Color okColor = new Color(50,200,100);

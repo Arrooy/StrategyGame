@@ -2,6 +2,10 @@ package View;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Es un JFrame undecored con la capacidad de usar una foto como contenido.
+ * Controller modifica la foto pintando encima el contenido del juego.
+ */
 public class Vista extends JFrame {
 
     private int width,height;
@@ -18,7 +22,7 @@ public class Vista extends JFrame {
         finishConfig(title,gamePanel);
     }
 
-    private void finishConfig(String title,JPanel mainPane){
+    private void finishConfig(String title, JPanel mainPane){
 
         add(mainPane,BorderLayout.CENTER);
 
@@ -38,7 +42,7 @@ public class Vista extends JFrame {
 
 
     public Graphics getGameGraphics() {
-       return gamePanel.getGraphics();
+        return gamePanel.getGraphics();
     }
 
     public void centerInScreen() {

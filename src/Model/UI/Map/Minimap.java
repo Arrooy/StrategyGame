@@ -8,6 +8,11 @@ import java.awt.geom.Rectangle2D;
 import static Controlador.Controller.*;
 import static Model.Sketch.minimapManager;
 
+
+/**
+ * Genera un minimapa de todoo el terreno de juego escalado a las dimensiones definidas.
+ * Todoo el contenido del minimapa ha de ser un objecto que implemente Mappable.
+ */
 public class Minimap {
 
     private static final Color hoverColor = new Color(200,200,200,75);

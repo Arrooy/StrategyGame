@@ -2,7 +2,11 @@ package Model.CameraControl;
 
 import static Controlador.Controller.*;
 
-//Gestiona moviment de la camara, el tamany del mapa
+
+/**
+ * Gestiona el movimento de la camara, el tamaño del mapa y las coordenadas de referecia del mismo
+ */
+
 //TODO: Afegir zoom.
 
 public class WorldManager {

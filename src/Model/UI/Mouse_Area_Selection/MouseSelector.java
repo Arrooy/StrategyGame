@@ -10,6 +10,10 @@ import java.util.LinkedList;
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
 
+/**
+ * Permite la selecion de selectables por arrastre, por click y por dobleClick
+ */
+
 public class MouseSelector {
 
     private static double ix;
@@ -18,9 +22,11 @@ public class MouseSelector {
     private static int quadrante;
     private static LinkedList<Selectable> selectables;
     private static LinkedList<Selectable> selected;
+    private static boolean usingADoubleClick;
 
     public static void init() {
         selecting = false;
+        usingADoubleClick = false;
         quadrante = 0;
         selectables = new LinkedList<>();
         selected = new LinkedList<>();
@@ -33,25 +39,64 @@ public class MouseSelector {
     public static void remove(Managable blueprint) {
         selectables.remove(blueprint);
         selected.remove(blueprint);
+        if (selected.isEmpty()) SelectionVisualitzer.hide();
     }
 
     public static void addToSelection(Selectable s){
         selected.add(s);
     }
 
-    public static void mousePressed(){
+    public static void substituteSelection(LinkedList<Selectable> newSel) {
+        for (Selectable s : selected) s.setSelected(false);
+        selected.clear();
+        selected = newSel;
+    }
 
-        ix = mouseX;
-        iy = mouseY;
-        selecting = true;
-        if (!selected.isEmpty()) selected.clear();
+    public static void mousePressed(int clickCount) {
+        if (clickCount == 1) {
+            ix = mouseX;
+            iy = mouseY;
+            selecting = true;
+            if (!selected.isEmpty()) selected.clear();
+            usingADoubleClick = false;
+        } else {
+            if (!selected.isEmpty()) selected.clear();
+            Selectable tipusTrobat = null;
+
+            for (Selectable s : selectables) {
+                if (almostInsideTheSelectionArea(s) || insideTheSelectionClick(s)) {
+                    tipusTrobat = s;
+                }
+                s.setSelected(false);
+            }
+
+            if (tipusTrobat != null) {
+                usingADoubleClick = true;
+                Class helper = tipusTrobat.getClass();
+
+                for (Selectable s : selectables) {
+                    if (s.getClass().equals(helper) && tipusTrobat.getInfo().getTeam() == s.getInfo().getTeam()) {
+                        s.setSelected(true);
+                        selected.add(s);
+                    }
+                }
+            } else {
+                usingADoubleClick = false;
+            }
+
+        }
     }
 
     public static void mouseReleased() {
-        selecting = false;
-        for (Selectable s : selectables) {
-            s.setSelected(almostInsideTheSelectionArea(s)|| insideTheSelectionClick(s));
-            if (s.isSelected()) selected.add(s);
+        if (usingADoubleClick) {
+
+            usingADoubleClick = false;
+        } else {
+            selecting = false;
+            for (Selectable s : selectables) {
+                s.setSelected(almostInsideTheSelectionArea(s) || insideTheSelectionClick(s));
+                if (s.isSelected()) selected.add(s);
+            }
         }
     }
 

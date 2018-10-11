@@ -5,6 +5,11 @@ import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.UI.Resources;
 import Model.Unitats.Miner;
 
+
+/**
+ * Permite iniciar el reclutamiento de un minero
+ */
+
 public class RecuitAMiner extends Action {
 
     public RecuitAMiner(Selectable s) {

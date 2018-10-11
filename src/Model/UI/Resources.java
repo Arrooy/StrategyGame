@@ -8,6 +8,12 @@ import java.awt.geom.Rectangle2D;
 
 import static Controlador.Controller.gameHeight;
 
+
+/**
+ * Muestra toda la informacion sobre los recursos del usuario.
+ */
+
+//TODO: HACER RESOURCES UNA CLASSE GESTIONADA DENTRO DE UN DEDICATED MANAGER. PARA TENER DIFERENTES "CARTERAS" PARA CADA TEAM.
 public class Resources {
 
     private static int gold;

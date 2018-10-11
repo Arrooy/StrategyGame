@@ -8,6 +8,11 @@ import java.awt.*;
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
 
+/***
+ * Base para todas las acciones que pueden ejecutar elementos ajenos a el mouse y el keyboard.
+ * Classes que usan acciones son Enity y Building, ya que pueden construir y generar unidades respectivamente.
+ */
+
 public abstract class Action {
 
     private String img;
@@ -17,7 +22,7 @@ public abstract class Action {
 
     protected Selectable actuator;
 
-    public Action(String img,Selectable a){
+    public Action(String img, Selectable a){
         this.img = img;
         mouseOver = false;
         shown = false;
@@ -27,7 +32,7 @@ public abstract class Action {
     //Desenvolupament de l'accio
     public abstract void init();
 
-    public void show(double x,double y,double w,double h){
+    public void show(double x, double y, double w, double h){
         this.x = x;
         this.y = y;
         this.w = w;

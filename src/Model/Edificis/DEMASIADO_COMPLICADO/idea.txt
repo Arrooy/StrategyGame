@@ -1,0 +1,12 @@
+Molaria un sistema de torres i paredes con un gestor de ambos. De esta forma, el usuario dispone las torres i las
+paredes de generan automaticamente.
+
+Dificultades que supongo:
+    -> Colision de unidades con paredes rotadas.
+    -> Generacion de paredes entre torres i gestion de la aparicion/desaparicion de paredes si se cae una torre
+    -> Calculo del coste de la construccion
+    -> Priorizar el comportamiento de la lucha de las entitys para atacar primero a otras entity en lugar de quedarse
+       atacando a una pared.
+    -> Como controlar la colision con otros edificios en el momento que se desea contruir la muralla
+
+La classe simpleWall intenta simplificar todos estos conceptos generando murallas no moduladas.

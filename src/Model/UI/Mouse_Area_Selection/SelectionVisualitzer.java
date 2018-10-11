@@ -13,9 +13,22 @@ import java.util.Map;
 
 import static Controlador.Controller.*;
 
+/**
+ * Muestra un menu con la informacion de la selecion actual.
+ * Esta selecion puede ser:
+ * ->simple: un objeto selecionado
+ * ->multiple: mas de un objeto del mismo / diferente tipo.
+ * <p>
+ * Si la selecion es simple, muestra tambien toda la informacion sobre el objeto (informacion de ObjectInfo)
+ * Si es multiple, se muestra la cantidad de cada tipo selecionado
+ */
 public class SelectionVisualitzer {
 
+    private static int multipleSelectionImageSize = 30;
+    private static Map<String, Integer> multipleSelectionItems;
+
     private static boolean shown;
+
     private static double h,w,x;
     private static int desiredH;
     private static double time = 0;
@@ -35,8 +48,7 @@ public class SelectionVisualitzer {
         return (t * t) * (3.0f - 2.0f * t);
     }
 
-    private static double ParametricBlend(double t)
-    {
+    private static double ParametricBlend(double t) {
         double sqt = Math.pow(t,2);
         return sqt / (2.0f * (sqt - t) + 1.0f);
     }
@@ -62,6 +74,7 @@ public class SelectionVisualitzer {
         g.setColor(Color.WHITE);
         g.drawString(hpText, (int) (x + 5 + (is + 5) / 2.0 - fm.stringWidth(hpText) / 2.0), yloc + fm.getAscent());
     }
+
     private static void renderSelectionInfo(Graphics2D g, ObjectInfo oi) {
         g.setFont(new Font("Arial",Font.PLAIN,14));
         FontMetrics fm = g.getFontMetrics();
@@ -130,9 +143,40 @@ public class SelectionVisualitzer {
             if(MouseSelector.multipleSelection()){
                 //Al apretar sobre un grup dins d'una multiple selection, es selecionan nomes les unitats apretades o
                 //es mostres les habilitats d'aquesta unitat!
-                /*for(Selectable s : MouseSelector.selectedItems()){
 
-                }*/
+                int ax = (int) x + 5;
+                int ay = (int) (gameHeight - h + 5);
+                int helper = 0;
+                String mousePressedImageName = "s";
+                for (String name : multipleSelectionItems.keySet()) {
+                    if (mouseX >= ax && mouseX <= ax + multipleSelectionImageSize &&
+                            mouseY >= ay && mouseY <= ay + multipleSelectionImageSize) {
+                        mousePressedImageName = name;
+                    }
+                    helper++;
+                    ax += multipleSelectionImageSize + 5;
+                    if (ax >= x + w || ax + multipleSelectionImageSize + 5 >= x + w) {
+                        ay += multipleSelectionImageSize + 5;
+                        ax = (int) x + 5;
+                    }
+                }
+
+                if (!mousePressedImageName.equals("s")) {
+                    if (helper > 1) {
+                        //Pasem de selecio multiple a simple. Pero pot seguir sent seleccio multiple.
+                        LinkedList<Selectable> newSel = new LinkedList<>();
+                        for (Selectable s : MouseSelector.selectedItems()) {
+                            if (s.getInfo().getImgName().equals(mousePressedImageName)) newSel.add(s);
+                        }
+                        MouseSelector.substituteSelection(newSel);
+                    } else if (helper == 1) {
+                        //Passem de multiple d'un tipus concret a simple del tipus
+                        LinkedList<Selectable> newSel = new LinkedList<>();
+                        newSel.add(MouseSelector.selectedItems().getFirst());
+                        MouseSelector.substituteSelection(newSel);
+                        newSel.getFirst().setSelected(true);
+                    }
+                }
             }else{
                 Selectable s = MouseSelector.selectedItems().getFirst();
                 ObjectInfo oi = s.getInfo();
@@ -149,7 +193,7 @@ public class SelectionVisualitzer {
     }
 
     private static void renderMultipleSelection(LinkedList<Selectable> selectedItems, Graphics2D g) {
-        Map<String,Integer> multipleSelectionItems = new HashMap<>();
+        multipleSelectionItems = new HashMap<>();
 
         for(Selectable s : selectedItems){
             String fotoName = s.getInfo().getImgName();
@@ -161,18 +205,18 @@ public class SelectionVisualitzer {
 
         int ax = (int) x + 5;
         int ay = (int) (gameHeight - h + 5);
-        int imageSize = 30;
+
         g.setColor(Color.white);
         g.setFont(new Font("Arial",Font.PLAIN,7));
         FontMetrics fm = g.getFontMetrics();
 
         for(String name : multipleSelectionItems.keySet()){
-            g.drawImage(AssetManager.getImage(name,imageSize,imageSize),ax,ay,null);
+            g.drawImage(AssetManager.getImage(name, multipleSelectionImageSize, multipleSelectionImageSize), ax, ay, null);
             int val = multipleSelectionItems.get(name);
-            g.drawString( val +  "", (float) (ax + imageSize / 2 - fm.stringWidth(val + "") / 2.0),ay + imageSize + fm.getAscent());
-            ax += imageSize + 5;
-            if(ax >= x + w|| ax + imageSize + 5 >= x + w){
-                ay += imageSize + 5;
+            g.drawString(val + "", (float) (ax + multipleSelectionImageSize / 2 - fm.stringWidth(val + "") / 2.0), ay + multipleSelectionImageSize + fm.getAscent());
+            ax += multipleSelectionImageSize + 5;
+            if (ax >= x + w || ax + multipleSelectionImageSize + 5 >= x + w) {
+                ay += multipleSelectionImageSize + 5;
                 ax = (int) x + 5;
             }
         }
@@ -219,6 +263,7 @@ public class SelectionVisualitzer {
     public static void show() {
         shown = true;
     }
+
     public static void hide() {
         shown = false;
     }

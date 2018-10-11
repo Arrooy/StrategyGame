@@ -1,7 +1,9 @@
 package Model.Unitats;
 
 import Model.Actions.Action;
+import Model.Actions.BuildABarrack;
 import Model.Actions.BuildABase;
+import Model.Actions.DestroyMeAction;
 import Model.CShape;
 import Model.DataContainers.ObjectInfo;
 import Model.Edificis.Base;
@@ -16,6 +18,18 @@ import java.awt.geom.Rectangle2D;
 import static Controlador.Controller.gameWidth;
 import static Model.Sketch.buildingsManager;
 import static Model.Sketch.minimapManager;
+
+/**
+ * Unidad basica del juego.
+ * Minero puede construir edificios y recojer recursos.
+ * Al tocar una base del mismo equipo, se depositan todos los recursos recolectados.
+ * Permite una recoleccion automatica de minerales.
+ */
+
+
+//TODO: Mejorar la recoleccion automatica, actualmente aparecen muchos errores de user experience al borrar la lista
+//Todo: de objetivos para ir a la mina. Teoricamente he apañado(adria) la gestion de la mina hacia la base, pero falta
+//Todo: mejorarlo i añadir la direccion contraria.
 
 public class Miner extends Entity {
 
@@ -44,14 +58,16 @@ public class Miner extends Entity {
     public Miner(double x, double y, double maxSpeed, double maxAccel, int team) {
         super(x, y, maxSpeed, maxAccel, maxHp, team);
 
-        actions = new Action[1];
+        actions = new Action[3];
         actions[0] = new BuildABase(this);
+        actions[1] = new BuildABarrack(this);
+        actions[2] = new DestroyMeAction(this);
         img = "prev_miner.png";
 
         goldInHand = 0;
         c = TeamColors.getMyColor(team);
 
-        objectInfo = new ObjectInfo(maxHp, maxHp, dmg, def, attSpeed, maxSpeed, img, actions);
+        objectInfo = new ObjectInfo(maxHp, maxHp, dmg, def, attSpeed, maxSpeed, team, img, actions);
         lastHarvest = 0;
     }
 

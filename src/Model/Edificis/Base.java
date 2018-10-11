@@ -1,23 +1,25 @@
 package Model.Edificis;
 
 import Model.Actions.Action;
+import Model.Actions.DestroyMeAction;
 import Model.Actions.RecuitAMiner;
 import Model.CShape;
 import Model.DataContainers.ObjectInfo;
 import Model.UI.Map.Minimap;
 import Model.UI.Mouse_Area_Selection.MouseSelector;
-import Model.Unitats.Entity;
 import Model.Unitats.Unit_Training.Trainable;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import static Model.Sketch.entityManager;
+/***
+ * Centro de mando de un equipo.
+ * Se pueden ampliar las acciones para generar distintos obreros / opciones de gestion del pueblo.
+ */
 
 public class Base extends Building {
 
-    public static final int PRICE = 100;
+    public static final int PRICE = 1000;
     public static final int SX = 20;
     public static final int SY = 20;
     public static final int HP = 100;
@@ -25,10 +27,11 @@ public class Base extends Building {
     public Base(double x, double y, int team) {
         super(x, y, SX, SY, HP, PRICE, team);
 
-        Action actions [] = new Action[1];
+        Action actions[] = new Action[2];
         actions[0] = new RecuitAMiner(this);
+        actions[1] = new DestroyMeAction(this);
 
-        objectInfo = new ObjectInfo(HP, HP, 0, 1, 0, 0, "prev_castle.png", actions);
+        objectInfo = new ObjectInfo(HP, HP, 0, 1, 0, 0, team, "prev_castle.png", actions);
     }
 
     public Base(double x, double y, int team, boolean createWithoutBuilingManager) {
@@ -40,21 +43,13 @@ public class Base extends Building {
         }
     }
 
-    private double dist(double x, double y, Point2D p) {
-        return Math.sqrt(Math.pow(x - p.getX(), 2) + Math.pow(y - p.getY(), 2));
-    }
     @Override
     public void update() {
 
     }
 
     public void trainCompleted(Trainable t) {
-        Entity aux = (Entity) t;
-        double cx = getSpawnPoint().getX(), cy = getSpawnPoint().getY();
-        double dir = Math.atan2(cy - y, cx - x);
-        aux.setLocation(x + Math.cos(dir) * (sx + aux.getSizeX() + 2) / 2, y + Math.sin(dir) * (sy + aux.getSizeY() + 2) / 2);
-        entityManager.add(aux);
-        aux.addObjective(new Point2D.Double(this.getSpawnPoint().getX(), this.getSpawnPoint().getY()));
+        traingToSpawnPoint(t);
     }
 
     @Override

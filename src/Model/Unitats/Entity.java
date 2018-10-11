@@ -23,6 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import static Model.Sketch.buildingsManager;
 
 
+/**
+ * Base para el movimiento de los personajes del juego.
+ * Permite:
+ * -> Movimiento tipo Arrive de Steering Beheaviours basado en objetivos
+ * -> Deteccion de colisiones con edificios
+ */
+
+//TODO: Algoritmo de obstacle avoidance al tocar un edificio involuntariamente (no en el caso de querer
+//TODO: depositar el oro en una base siendo minero)!
+
 public abstract class Entity implements Representable, Selectable, Mappable, Managable, Trainable {
 
     private final int THRESHOLD_STOP_TIME_F = 10;
@@ -219,10 +229,10 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                         if (b instanceof Mine) {
                             ((Miner) this).harvest(((Mine) b));
                         } else if (b instanceof Base) {
-                            Resources.add(((Miner) this).getGold());
+                            int goldCollected = ((Miner) this).getGold();
+                            if (goldCollected > 0) Resources.add(goldCollected);
                         }
                     }
-
                     imFreeToMove = false;
                 }
             } else {
@@ -278,6 +288,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     public double getSizeY() {
         return s;
     }
+
     @Override
     public double getLX() {
         return x - s/2 - WorldManager.xPos();

@@ -2,6 +2,10 @@ package Utils;
 
 import java.awt.*;
 
+/**
+ * Genera un color aleatorio para cada team al inicio de la partida.
+ * Cada elemento de un team pide su color a esta classe.
+ */
 public class TeamColors {
 
     private static Color[] colors;

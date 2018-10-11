@@ -8,6 +8,25 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static Controlador.Controller.UPDATE_DELAY;
 
+/**
+ * Esta classe se ocupa de :
+ * -> Añadir
+ * -> Sacar
+ * objetos de un mapa del tipo <T>.
+ * Aparte de gestionar una entrada i salida segura i concurrente, llama en un
+ * thread independiente la funcion baseUpdate(); del objeto
+ * <p>
+ * Se usa la interficie Managable para poder acordar la existencia del baseUpdate() en los
+ * objetos del tipo <T>
+ * <p>
+ * Esta classe tiene mucha chicha. Basicamente gestiona listas enormes de
+ * objetos y las actualitza en threads diferentes para augmentar el rendimiento general del juego.
+ * Basicamente reparte la carga del thread Updater() generando threads dedicados para objetos del mismo tipo.
+ * De esta forma, Updater() se concentra en actualitzar la UI.
+ *
+ * @param <T> Tipo que se quiere gestionar
+ */
+
 public class DedicatedManager <T extends Managable> extends Thread {
 
     private Map<Double,T> objectsToManage;

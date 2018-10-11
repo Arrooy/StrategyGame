@@ -10,6 +10,11 @@ import Utils.BuildManager;
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
 
+
+/**
+ * Permite inicar la construccion de una base en el BuildManager
+ */
+
 public class BuildABase extends Action {
 
     public BuildABase(Selectable actuator) {

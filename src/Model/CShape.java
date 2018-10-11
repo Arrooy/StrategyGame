@@ -3,8 +3,14 @@ package Model;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class CShape {
+/**
+ * Genera shapes complejas para renderizar con Graphics2D.
+ * Seguramente va a ser suplandada por un conjunto de classes de gestion de sprites y animaciones
+ */
 
+//TODO: Generar el package de geston de sprites i animaciones. (Threads por un tubo, animator i mejora necesaria de AssetManager)
+
+public class CShape {
 
     public static Shape mine(double x, double y, double sx, double sy) {
 
@@ -43,4 +49,9 @@ public class CShape {
 
         return new Polygon(px, py, 3);
     }
+
+    public static Shape archer(double x, double y, double s) {
+        return new Rectangle2D.Double(x - s / 2, y - s / 2, s, s);
+    }
+
 }

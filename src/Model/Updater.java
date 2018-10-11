@@ -2,6 +2,10 @@ package Model;
 
 import Controlador.Controller;
 
+/**
+ * Thread que actualiza la logica del juego
+ */
+
 public class Updater extends Thread {
 
     Representable r;

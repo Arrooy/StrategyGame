@@ -9,29 +9,23 @@ import Model.UI.FX.AnimatedText;
 import Utils.TeamColors;
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import static Model.Sketch.*;
 
 
-/**
- * Unidad basica de lucha cuerpo a cuerpo.
- * -> Tiene un algoritmo de busqueda de objetivos por proximidad.
- * -> Ataca a los objetivos fijados que esten a su rango acercandose i actualizando la ubicacion del objetivo
- * en real time.
- */
+//ALERT: NO ESTA ACABADA!!! NO LA USIS!
 
-//TODO: LOS WARRIOR SE QUEDAN ATACANDO AL OBJECTIVO HASTA QUE LO MATAN.
-//TODO: MIENTRAS TENGAN OBJECTIVO, IGNORAN LAS ORDENES DEL USUARIO Y NO CUNDE.
+//TODO: He notado (adria) que Archer i Warrior comparten un comportamiento bastante parecido de
+//TODO: localizacion i gestion de target. Seguramente es buena idea generalizar
+public class Archer extends Entity {
 
-public class Warrior extends Entity {
+    public static final int price = 150;
 
     private static final int TRAINING_TIME = 500;
     private static final int VISION_RANGE = 200;
-    private static final int ATTACK_RANGE = 50;
-    public static final int price = 100;
-    private final static int maxHp = 2;
+    private static final int ATTACK_RANGE = 200;
+    private final static int maxHp = 1;
 
     private double attSpeed = 5;
     private int def = 1;
@@ -42,27 +36,25 @@ public class Warrior extends Entity {
     private Color c;
     private Action[] actions;
 
-
     private Entity target;
     private long lastAttack;
+    private double heading;
 
 
-    public Warrior(double x, double y, double maxSpeed, double maxAccel, int team) {
+    public Archer(double x, double y, double maxSpeed, double maxAccel, int team) {
         super(x, y, maxSpeed, maxAccel, maxHp, team);
 
-        img = "prev_warrior.png";
+        img = "prev_archer.png";
 
         c = TeamColors.getMyColor(team);
-
-
         actions = new Action[1];
         actions[0] = new DestroyMeAction(this);
 
         objectInfo = new ObjectInfo(maxHp, maxHp, dmg, def, attSpeed, maxSpeed, team, img, actions);
         target = null;
         lastAttack = 0;
+        heading = 0;
     }
-
 
     @Override
     public void update() {
@@ -79,15 +71,15 @@ public class Warrior extends Entity {
             //Target localitzat, ens dirigim a atacarlo
             double distance = dist(this, target);
             if (distance <= VISION_RANGE / 2) {
-                double angle = Math.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX());
-                double tx = target.getCenterX() - target.getSizeX() * Math.cos(angle);
-                double ty = target.getCenterY() - target.getSizeY() * Math.sin(angle);
-
+                heading = Math.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX());
+                double tx = target.getCenterX() - target.getSizeX() * Math.cos(heading);
+                double ty = target.getCenterY() - target.getSizeY() * Math.sin(heading);
+/*
                 if (!objList.isEmpty())
                     updateActualObjective(new Point2D.Double(tx, ty));
                 else
                     addObjective(new Point2D.Double(tx, ty));
-
+                */
                 if (distance <= ATTACK_RANGE / 2) {
                     if (System.currentTimeMillis() - lastAttack >= attSpeed) {
                         int realDamage = target.calculateRealDamage(dmg);
@@ -95,7 +87,7 @@ public class Warrior extends Entity {
                         if (isDead) {
                             entityManager.remove(target);
                             minimapManager.remove(target);
-
+                            heading = 0;
                             target = null;
                         }
                         fxTextManager.add(new AnimatedText((int) x - WorldManager.xPos(), (int) y - WorldManager.yPos(), "-" + realDamage));
@@ -117,14 +109,11 @@ public class Warrior extends Entity {
         });
 
         g.setColor(selected ? c.darker() : c);
-        g.fill(CShape.warrior(x, y, s));
-/*
-        g.setColor(targetOnRange ? new Color(200,100,100,100) : new Color(100,200,100,100));
-        g.fill(new Ellipse2D.Double(x - VISION_RANGE / 2,y - VISION_RANGE/2,VISION_RANGE,VISION_RANGE));
-
-        g.setColor(new Color(200,100,255,200));
-        g.fill(new Ellipse2D.Double(x - ATTACK_RANGE / 2,y - ATTACK_RANGE / 2, ATTACK_RANGE, ATTACK_RANGE));*/
+        g.rotate(heading);
+        g.fill(CShape.archer(x, y, s));
+        g.rotate(-heading);
     }
+
 
     @Override
     public ObjectInfo getInfo() {

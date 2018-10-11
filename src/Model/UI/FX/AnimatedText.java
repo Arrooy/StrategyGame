@@ -8,6 +8,11 @@ import java.awt.geom.AffineTransform;
 
 import static Model.Sketch.fxTextManager;
 
+
+/**
+ * Texto momentanio que aparece en la pantalla con una animacion.
+ * Animacion actual : crece en tamaño 200 ms, disminuye la coordenada y y reduce la alfa simultaniamente.
+ */
 public class AnimatedText implements Managable {
 
     private float x, y, y1, speed;

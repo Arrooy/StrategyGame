@@ -8,6 +8,12 @@ import Model.Unitats.Unit_Training.Trainable;
 
 import java.awt.*;
 
+
+/***
+ * Edificio para la extraer oro.
+ * La vida es equivalente a la capacidad de oro del Ore.
+ * IMPORTANTE: por defecto no tiene equipo ->  team = 0
+ */
 public class Mine extends Building {
 
     public static final int PRICE = 0;
@@ -20,7 +26,7 @@ public class Mine extends Building {
 
         Minimap.add(this);
         MouseSelector.add(this);
-        objectInfo = new ObjectInfo(HP, HP, 0, 0, 0, 0, "mine.png");
+        objectInfo = new ObjectInfo(HP, HP, 0, 0, 0, 0, 0, "mine.png");
     }
 
     @Override

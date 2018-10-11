@@ -17,6 +17,22 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static Model.Sketch.entityManager;
+
+
+/**
+ * Definicion de un edificio basico.
+ * Permite:
+ * ->tener un spawn point
+ * ->recivir daño
+ * ->Reclutar (train) unidades
+ * Deja opciones como:
+ * -> Finalizacion del Training (Trainable)
+ * -> Update(); (Renderitzable)
+ * -> Render(); (Renderitzable)
+ * Para que cada tipo de edificio defina su comportamiento
+ */
+
 public abstract class Building implements Representable, Selectable, Mappable, Managable {
 
     protected double x, y, sx, sy;
@@ -93,6 +109,16 @@ public abstract class Building implements Representable, Selectable, Mappable, M
                 if (!trainQueue.isEmpty()) trainQueue.peek().initTrain();
             }
         }
+    }
+
+
+    protected void traingToSpawnPoint(Trainable t) {
+        Entity aux = (Entity) t;
+        double cx = getSpawnPoint().getX(), cy = getSpawnPoint().getY();
+        double dir = Math.atan2(cy - y, cx - x);
+        aux.setLocation(x + Math.cos(dir) * (sx + aux.getSizeX() + 2) / 2, y + Math.sin(dir) * (sy + aux.getSizeY() + 2) / 2);
+        entityManager.add(aux);
+        aux.addObjective(new Point2D.Double(this.getSpawnPoint().getX(), this.getSpawnPoint().getY()));
     }
 
     public void trainProgressBar(Graphics2D g) {

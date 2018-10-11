@@ -9,6 +9,22 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+
+
+/**
+ * NO TOCAR !
+ * <p>
+ * Classe encargada de gestionar :
+ * -> el render del juego.
+ * -> los inputs del juego(mouse i keyboard)
+ * -> resize del JPanel
+ * Contiene :
+ * -> el tamaño de la pantalla(juego)
+ * -> la velocidad de los bucles infinitos (UPDATE_DELAY)
+ * -> la imagen que se usa para hacer el render
+ * -> el sketch donde se produce la magia
+ */
+
 public class Controller extends Thread implements KeyListener, MouseInputListener{
 
     public static int UPDATE_DELAY  = 20; //espera dels upadte en ms
@@ -62,6 +78,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
     @Override
     public void keyTyped(KeyEvent e) {
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         r.keyPressed(e.getKeyCode());

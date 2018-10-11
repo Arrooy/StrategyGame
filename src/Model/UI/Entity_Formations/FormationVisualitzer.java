@@ -7,6 +7,11 @@ import java.awt.geom.Rectangle2D;
 
 import static Controlador.Controller.*;
 
+/***
+ * Gestiona el menu lateral con los diferentes modos de formacion dsiponibles.
+ * Si se modifica el modo de formacion, Organizer es informado
+ */
+
 public class FormationVisualitzer {
 
     private static double y, w, h;

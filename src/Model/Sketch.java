@@ -4,6 +4,7 @@ import Model.CameraControl.WorldManager;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
+import Model.Edificis.SimpleWall;
 import Model.MassiveListManager.DedicatedManager;
 import Model.UI.Entity_Formations.FormationVisualitzer;
 import Model.UI.Entity_Formations.Organizer;
@@ -15,7 +16,6 @@ import Model.UI.Mouse_Area_Selection.SelectionVisualitzer;
 import Model.UI.Resources;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
-import Model.Unitats.Warrior;
 import Utils.BuildManager;
 import Utils.TeamColors;
 
@@ -60,13 +60,6 @@ public class Sketch implements Representable{
         return nextRandom;
     }
 
-    @Override
-    public void update() {
-        SelectionVisualitzer.update();
-        WorldManager.update();
-        Organizer.update();
-        BuildManager.update();
-    }
 
     public void initSketch(){
 
@@ -88,16 +81,47 @@ public class Sketch implements Representable{
             buildingsManager.add(new Mine(Math.random() * (gameWidth + WorldManager.getMaxScrollHorizontal()), Math.random() * 100 + WorldManager.yPos() + gameHeight - 100));
 
         buildingsManager.add(new Base(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2, 1, true));
+
+        buildingsManager.add(new SimpleWall(WorldManager.xPos() + gameWidth / 2 - 100, WorldManager.yPos() + gameHeight / 2, 200, 1, true));
+
         int initNWorkers = 15;
         int unitSize = 11;
         for (int i = 0; i < initNWorkers; i++)
             entityManager.add(new Miner(WorldManager.xPos() + gameWidth / 2 - unitSize / 2 * initNWorkers + unitSize * i, WorldManager.yPos() + gameHeight / 2 + 50, 12, 0.9, 1));
 
-        entityManager.add(new Warrior(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
+        //entityManager.add(new Warrior(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
         entityManager.add(new Miner(WorldManager.xPos() + 100, WorldManager.yPos() + gameHeight / 2 + 50, 12, 0.9, 2));
 
+        //        entityManager.add(new Archer(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9,1));
 
     }
+
+    @Override
+    public void update() {
+        SelectionVisualitzer.update();
+        WorldManager.update();
+        Organizer.update();
+        BuildManager.update();
+    }
+
+    @Override
+    public void render(Graphics2D g) {
+        g.translate(-WorldManager.xPos(), -WorldManager.yPos());
+
+        Organizer.render(g);
+        buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
+        entityManager.getObjects().forEach((a) -> a.render(g));
+        g.translate(+WorldManager.xPos(), +WorldManager.yPos());
+
+        fxTextManager.getObjects().forEach((a) -> a.render(g));
+        Minimap.render(g);
+        FormationVisualitzer.render(g);
+        MouseSelector.render(g);
+        Resources.render(g);
+        BuildManager.render(g);
+        SelectionVisualitzer.render(g);
+    }
+
 
     public void mouseMoved(){
 
@@ -137,7 +161,7 @@ public class Sketch implements Representable{
                         FormationVisualitzer.mousePressed();
                     } else {
                         //Estem sobre el terreny de joc
-                        MouseSelector.mousePressed();
+                        MouseSelector.mousePressed(e.getClickCount());
                     }
                 }
             }else{
@@ -185,21 +209,5 @@ public class Sketch implements Representable{
         }
     }
 
-    @Override
-    public void render(Graphics2D g) {
-        g.translate(-WorldManager.xPos(), -WorldManager.yPos());
 
-        Organizer.render(g);
-        buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
-        entityManager.getObjects().forEach((a) -> a.render(g));
-        g.translate(+WorldManager.xPos(), +WorldManager.yPos());
-
-        fxTextManager.getObjects().forEach((a) -> a.render(g));
-        Minimap.render(g);
-        FormationVisualitzer.render(g);
-        MouseSelector.render(g);
-        Resources.render(g);
-        BuildManager.render(g);
-        SelectionVisualitzer.render(g);
-    }
 }

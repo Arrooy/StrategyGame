@@ -16,6 +16,14 @@ import java.util.LinkedList;
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
 
+/***
+ * Gestiona las diferentes formaciones del juego indicando a cada elemento selecionado qual es su proximo objetivo.
+ * Para elegir como formar unidades se usa el menu generado por FormationVisualitzer.
+ *
+ * Estas formaciones estan basadas en los elementos selecionados por MouseSelector.
+ *
+ */
+
 public class Organizer {
 
     private static LinkedList<Point2D.Double> points;

@@ -6,6 +6,14 @@ import Utils.AssetManager;
 import java.awt.*;
 import java.text.DecimalFormat;
 
+
+/**
+ * Permite guardar la informacion de cada Selectable. De esta forma, al selecionar algo, SelectionVisualitzer puede
+ * mostrar la informacion correcta del elemento selecionada buscando en este objeto.
+ */
+
+//TODO: REPENSAR ESTE CONCEPTO + BUSCARLE UN PACKAGE CORRECTO
+
 public class ObjectInfo {
 
     private int hp;
@@ -18,9 +26,11 @@ public class ObjectInfo {
     private String img;
     private DecimalFormat nf = new DecimalFormat("0.00");
     private Action[] actions;
+    private int team;
 
-    public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, String img) {
+    public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, int team, String img) {
         this.hp = hp;
+        this.team = team;
         this.damage = damage;
         this.armor = armor;
         this.attSpeed = attSpeed;
@@ -30,8 +40,8 @@ public class ObjectInfo {
         actions = null;
     }
 
-    public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, String img,Action[] action) {
-        this(hp,maxHp,damage,armor,attSpeed,vel,img);
+    public ObjectInfo(int hp, int maxHp, int damage, int armor, double attSpeed, double vel, int team, String img, Action[] action) {
+        this(hp, maxHp, damage, armor, attSpeed, vel, team, img);
         actions = action;
     }
 
@@ -53,11 +63,11 @@ public class ObjectInfo {
 
 
     //TODO: DOWNLOAD ORIGINAL SIZED IMAGES.
-    public Image getImg(int w,int h) {
+    public Image getImg(int w, int h) {
         Image aux = AssetManager.getImage(img);
         //System.out.println(w + " " + h +" " + img + " " + aux.getWidth(null) + "  " + aux.getHeight(null));
         if(aux.getWidth(null) == w && aux.getHeight(null) == h){
-          //  System.out.println("GIVIN ORIGINAL " + img);
+            //  System.out.println("GIVIN ORIGINAL " + img);
             return aux;
         }else{
             return AssetManager.getImage(img,w,h);
@@ -98,5 +108,9 @@ public class ObjectInfo {
 
     public void updateHp(int hp) {
         this.hp = hp;
+    }
+
+    public int getTeam() {
+        return team;
     }
 }
