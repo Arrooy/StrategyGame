@@ -1,8 +1,8 @@
 package Model.Edificis;
 
 import Model.Actions.Action;
+import Model.Actions.Buildings.RecuitAWarrior;
 import Model.Actions.DestroyMeAction;
-import Model.Actions.RecuitAWarrior;
 import Model.DataContainers.ObjectInfo;
 import Model.Unitats.Unit_Training.Trainable;
 

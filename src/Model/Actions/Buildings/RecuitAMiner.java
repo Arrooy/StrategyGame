@@ -1,5 +1,6 @@
-package Model.Actions;
+package Model.Actions.Buildings;
 
+import Model.Actions.Action;
 import Model.Edificis.Base;
 import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.UI.Resources;

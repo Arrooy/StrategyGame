@@ -1,8 +1,8 @@
 package Model.Edificis;
 
 import Model.Actions.Action;
+import Model.Actions.Buildings.RecuitAMiner;
 import Model.Actions.DestroyMeAction;
-import Model.Actions.RecuitAMiner;
 import Model.CShape;
 import Model.DataContainers.ObjectInfo;
 import Model.UI.Map.Minimap;

@@ -1,13 +1,13 @@
 package Utils;
 
 import Model.Edificis.Building;
+import Model.Edificis.SimpleWall;
 import Model.UI.Map.Minimap;
 import Model.UI.Mouse_Area_Selection.MouseSelector;
 import Model.UI.Mouse_Area_Selection.Selectable;
 import Model.UI.Resources;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 import static Controlador.Controller.mouseX;
 import static Controlador.Controller.mouseY;
@@ -31,18 +31,26 @@ public class BuildManager {
     private static boolean readyToBuild;
     private static Color c;
 
+    private static double wallRad;
+    private static boolean needsAnUpdate;
+
     public static void init(){
         readyToBuild = false;
         c = badColor;
+        wallRad = 0;
+        needsAnUpdate = false;
     }
 
     public static void initBuild(Building building){
         Resources.add(- building.getPrice());
         blueprint = building;
+        wallRad = 30;
+        needsAnUpdate = false;
     }
 
     public static Building finshBuild(){
         blueprint.setSpawnPoint(blueprint.getCenterX() + blueprint.getWidth() * 1.5,blueprint.getCenterY());
+        blueprint.restoreOriginalColor();
         Minimap.add(blueprint);
         MouseSelector.add(blueprint);
         Building aux = blueprint;
@@ -55,6 +63,7 @@ public class BuildManager {
         blueprint = null;
     }
 
+    //TODO: MODIFICAR LES CONFICIONS PER AL CAS DE UNA SIMPLE WALL!
     //Burrada de condicions.
     private static boolean almostInsideTheSelectionArea(Selectable s, int quadrante) {
         return  MouseSelector.selectAPoint(blueprint.getLX(),blueprint.getUY(),blueprint.getRX(),blueprint.getLY(),s.getLX(),s.getUY(),quadrante) ||
@@ -76,6 +85,10 @@ public class BuildManager {
 
     public static void update() {
         if(blueprint != null) {
+            if (needsAnUpdate && blueprint instanceof SimpleWall) {
+                ((SimpleWall) blueprint).updateOuterRad(wallRad);
+                needsAnUpdate = false;
+            }
             blueprint.move(mouseX, mouseY);
             readyToBuild = isClearLocation();
             c = readyToBuild ? okColor : badColor;
@@ -84,8 +97,14 @@ public class BuildManager {
 
     public static void render(Graphics2D g) {
         if(blueprint != null) {
-            g.setColor(c);
-            g.fill(new Rectangle2D.Double(blueprint.getLX(), blueprint.getUY(), blueprint.getWidth(), blueprint.getHeigth()));
+
+            DEBUG.add("blueprint x is ", blueprint.getCenterX());
+            DEBUG.add("blueprint y is ", blueprint.getCenterY());
+
+
+            //g.fill(new Rectangle2D.Double(blueprint.getLX(), blueprint.getUY(), blueprint.getWidth(), blueprint.getHeigth()));
+            blueprint.setColor(c);
+            blueprint.render(g);
         }
     }
 
@@ -97,4 +116,9 @@ public class BuildManager {
         return blueprint != null;
     }
 
+    public static int modifyWallSize(int addition) {
+        wallRad += addition;
+        needsAnUpdate = true;
+        return (int) wallRad;
+    }
 }

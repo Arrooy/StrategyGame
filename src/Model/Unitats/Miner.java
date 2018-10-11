@@ -1,9 +1,10 @@
 package Model.Unitats;
 
 import Model.Actions.Action;
-import Model.Actions.BuildABarrack;
-import Model.Actions.BuildABase;
 import Model.Actions.DestroyMeAction;
+import Model.Actions.Entities.BuildABarrack;
+import Model.Actions.Entities.BuildABase;
+import Model.Actions.Entities.BuildASimpleWall;
 import Model.CShape;
 import Model.DataContainers.ObjectInfo;
 import Model.Edificis.Base;
@@ -58,10 +59,11 @@ public class Miner extends Entity {
     public Miner(double x, double y, double maxSpeed, double maxAccel, int team) {
         super(x, y, maxSpeed, maxAccel, maxHp, team);
 
-        actions = new Action[3];
+        actions = new Action[4];
         actions[0] = new BuildABase(this);
         actions[1] = new BuildABarrack(this);
-        actions[2] = new DestroyMeAction(this);
+        actions[2] = new BuildASimpleWall(this);
+        actions[3] = new DestroyMeAction(this);
         img = "prev_miner.png";
 
         goldInHand = 0;

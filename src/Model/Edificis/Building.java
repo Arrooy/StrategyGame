@@ -42,7 +42,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     protected Point2D.Double spawnPoint;
 
     protected boolean selected = false;
-    protected Color c;
+    protected Color c, originalColor;
     private Double key = Sketch.getNewKey();
 
     protected ConcurrentLinkedQueue<TrainTask<Entity>> trainQueue;
@@ -63,6 +63,8 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         this.spawnPoint = new Point2D.Double(x, y);
         this.team = team;
         this.c = TeamColors.getMyColor(team);
+        this.originalColor = TeamColors.getMyColor(team);
+
         trainQueue = new ConcurrentLinkedQueue<>();
         isAlive = true;
     }
@@ -239,5 +241,13 @@ public abstract class Building implements Representable, Selectable, Mappable, M
 
     public int getTeam() {
         return team;
+    }
+
+    public void setColor(Color c) {
+        this.c = c;
+    }
+
+    public void restoreOriginalColor() {
+        c = originalColor;
     }
 }

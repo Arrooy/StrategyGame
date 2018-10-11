@@ -1,5 +1,6 @@
-package Model.Actions;
+package Model.Actions.Entities;
 
+import Model.Actions.Action;
 import Model.CameraControl.WorldManager;
 import Model.Edificis.Barrack;
 import Model.UI.Mouse_Area_Selection.Selectable;

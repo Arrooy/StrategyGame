@@ -4,7 +4,6 @@ import Model.CameraControl.WorldManager;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
 import Model.Edificis.Mine;
-import Model.Edificis.SimpleWall;
 import Model.MassiveListManager.DedicatedManager;
 import Model.UI.Entity_Formations.FormationVisualitzer;
 import Model.UI.Entity_Formations.Organizer;
@@ -17,6 +16,7 @@ import Model.UI.Resources;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 import Utils.BuildManager;
+import Utils.DEBUG;
 import Utils.TeamColors;
 
 import java.awt.*;
@@ -24,8 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
-import static Controlador.Controller.gameHeight;
-import static Controlador.Controller.gameWidth;
+import static Controlador.Controller.*;
 
 
 //TODO: ADD DOUBLE CLICK SELECTION
@@ -82,7 +81,7 @@ public class Sketch implements Representable{
 
         buildingsManager.add(new Base(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2, 1, true));
 
-        buildingsManager.add(new SimpleWall(WorldManager.xPos() + gameWidth / 2 - 100, WorldManager.yPos() + gameHeight / 2, 200, 1, true));
+        //buildingsManager.add(new SimpleWall(WorldManager.xPos() + gameWidth / 2 - 100, WorldManager.yPos() + gameHeight / 2, 200, 1));
 
         int initNWorkers = 15;
         int unitSize = 11;
@@ -106,11 +105,13 @@ public class Sketch implements Representable{
 
     @Override
     public void render(Graphics2D g) {
+        DEBUG.render(g);
         g.translate(-WorldManager.xPos(), -WorldManager.yPos());
 
         Organizer.render(g);
         buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
         entityManager.getObjects().forEach((a) -> a.render(g));
+        BuildManager.render(g);
         g.translate(+WorldManager.xPos(), +WorldManager.yPos());
 
         fxTextManager.getObjects().forEach((a) -> a.render(g));
@@ -118,13 +119,16 @@ public class Sketch implements Representable{
         FormationVisualitzer.render(g);
         MouseSelector.render(g);
         Resources.render(g);
-        BuildManager.render(g);
+
         SelectionVisualitzer.render(g);
     }
 
 
     public void mouseMoved(){
-
+        DEBUG.add("Mouse screen coord x is ", mouseX);
+        DEBUG.add("Mouse screen coord y is ", mouseY);
+        DEBUG.add("Mouse World coord x is ", mouseX + WorldManager.xPos());
+        DEBUG.add("Mouse World coord y is ", mouseY + WorldManager.yPos());
     }
 
     public void keyPressed(int key){
@@ -138,8 +142,14 @@ public class Sketch implements Representable{
     public void keyReleased(int key) {
         switch (key) {
 
-            case KeyEvent.VK_S:
+            case KeyEvent.VK_ADD:
 
+                DEBUG.add("Rad: ", (Integer) BuildManager.modifyWallSize(10));
+                break;
+
+            case KeyEvent.VK_SUBTRACT:
+                BuildManager.modifyWallSize(-10);
+                DEBUG.add("Rad: ", (Integer) BuildManager.modifyWallSize(-10));
                 break;
             default:
         }
