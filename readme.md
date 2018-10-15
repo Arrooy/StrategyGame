@@ -1,9 +1,8 @@
 # StrategyGame - Unnamed 
 
 Si no sabes que hacer, revisa los _TODO_.
-Puedes añadir lo que quieras al juego pero...
 
-El codigo que subas ha de ser **ESTABLE**
+Añade lo que quieras al juego siempre que el codigo que subas sea **ESTABLE**
 
 ## LISTA DE ILUSIONES:
 
