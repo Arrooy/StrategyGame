@@ -1,38 +1,17 @@
-####SKETCH + UPDATER + CONTROLLER = GAME
-He intentado comentar el codigo un poco, si no entiendes algo, no dudes en preguntarme!
+# StrategyGame - Unnamed 
 
 Si no sabes que hacer, revisa los _TODO_.
 
-Puedes añadir lo que quieras al juego pero...
+Añade lo que quieras al juego siempre que el codigo que subas sea **ESTABLE**
 
-ES OBLIGATORIO SUBIR CODIGO **ESTABLE**
+## LISTA DE ILUSIONES:
 
-##LISTA DE ILUSIONES:
-.> Tematica para el juego
+.> Tema para el juego
+
+.> Objetivo del juego ( *en proceso* )
 
 .> Diseñador para los assets
 
-.> Encontrar a mas locos del coding
+.> Encontrar a mas locos para alimentar el programa
  
 .> OnLine (Sockets - ClienteServidor) (es de locos...?)
-
-#NO IMPLEMENTADO LINE
-##Funcionamiento de los assets(img):
-
-Las imagenes se han de nombrar de la siguiente forma:
-    
-    .> <tipo_imagen><nombre_classe><dimensionX>x<dimensionY>.png
-   
-   
-Donde:
-
-    -. <tipo_imagen> corresponde al uso de la imagen
-
-    -. <nombre_classe> corresponde al nombre de la classe objectivo
-
-    -. <dimensionX> width de la imagen
-
-    -. <dimensionY> height de la imagen
-                
-Nota mental: Molaria crear un monton de assets con diferentes dimensiones para eliminar la necesidad de 
-usar algoritmos de escalado para los assets.
