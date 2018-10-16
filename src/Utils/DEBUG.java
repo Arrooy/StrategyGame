@@ -28,14 +28,16 @@ public class DEBUG {
 
     public static void render(Graphics2D g) {
         g.setColor(Color.black);
+        g.setFont(new Font("Arial", Font.PLAIN, 10));
         y = 0;
-        text("Debug", g);
+        text("Debug log", g);
 
         if (debugList != null) {
             for (DebugMessage d : debugList) {
                 text(d.getIntro() + d.getVarRef().toString(), g);
             }
         }
+        g.setFont(new Font("Arial", Font.PLAIN, 14));
     }
 
     private static void text(String debug, Graphics2D g) {

@@ -33,8 +33,7 @@ public class AnimatedText implements Managable {
         alfa = 255;
         speed = (float) Math.random() * 3.0f + 0.2f;
         angle = (int) (Math.random() * 20 - 10);
-        color = new Color((int) (Math.random() * 255.0), (int) (Math.random() * 255.0), (int) (Math.random() * 255.0));
-        ;
+        color = content.charAt(0) == '+' ? Color.green : Color.red;
     }
 
 

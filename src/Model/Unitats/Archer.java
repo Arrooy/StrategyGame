@@ -26,8 +26,10 @@ public class Archer extends Entity {
     private static final int VISION_RANGE = 200;
     private static final int ATTACK_RANGE = 200;
     private final static int maxHp = 1;
+    private final int bowGap = 10;
+    private final int bowSize = 5;
 
-    private double attSpeed = 5;
+    private double attSpeed = 500;
     private int def = 1;
     private int dmg = 1;
     private String img;
@@ -39,7 +41,7 @@ public class Archer extends Entity {
     private Entity target;
     private long lastAttack;
     private double heading;
-
+    private double distToBow;
 
     public Archer(double x, double y, double maxSpeed, double maxAccel, int team) {
         super(x, y, maxSpeed, maxAccel, maxHp, team);
@@ -54,6 +56,7 @@ public class Archer extends Entity {
         target = null;
         lastAttack = 0;
         heading = 0;
+        distToBow = s / 2 + bowSize / 2 + bowGap;
     }
 
     @Override
@@ -72,25 +75,22 @@ public class Archer extends Entity {
             double distance = dist(this, target);
             if (distance <= VISION_RANGE / 2) {
                 heading = Math.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX());
-                double tx = target.getCenterX() - target.getSizeX() * Math.cos(heading);
-                double ty = target.getCenterY() - target.getSizeY() * Math.sin(heading);
-/*
-                if (!objList.isEmpty())
-                    updateActualObjective(new Point2D.Double(tx, ty));
-                else
-                    addObjective(new Point2D.Double(tx, ty));
-                */
+
+                //TODO: NO FER DAMAGE DIRECTAMENT, SINO QUE INVENTAR UN PROJECTIL
                 if (distance <= ATTACK_RANGE / 2) {
                     if (System.currentTimeMillis() - lastAttack >= attSpeed) {
                         int realDamage = target.calculateRealDamage(dmg);
                         boolean isDead = target.getDamage(realDamage);
+                        double ex = target.getCenterX();
+                        double ey = target.getCenterY();
                         if (isDead) {
                             entityManager.remove(target);
                             minimapManager.remove(target);
                             heading = 0;
                             target = null;
                         }
-                        fxTextManager.add(new AnimatedText((int) x - WorldManager.xPos(), (int) y - WorldManager.yPos(), "-" + realDamage));
+
+                        fxTextManager.add(new AnimatedText((int) ex - WorldManager.xPos(), (int) ey - WorldManager.yPos(), "-" + realDamage));
 
                         lastAttack = System.currentTimeMillis();
                     }
@@ -109,9 +109,10 @@ public class Archer extends Entity {
         });
 
         g.setColor(selected ? c.darker() : c);
-        g.rotate(heading);
         g.fill(CShape.archer(x, y, s));
-        g.rotate(-heading);
+
+        g.setColor(selected ? c.darker() : c);
+        g.fill(new Rectangle2D.Double(x - bowSize / 2 + Math.cos(heading) * distToBow, y - bowSize / 2 + Math.sin(heading) * distToBow, bowSize, bowSize));
     }
 
 

@@ -13,6 +13,7 @@ import Model.UI.Map.Minimap;
 import Model.UI.Mouse_Area_Selection.MouseSelector;
 import Model.UI.Mouse_Area_Selection.SelectionVisualitzer;
 import Model.UI.Resources;
+import Model.Unitats.Archer;
 import Model.Unitats.Entity;
 import Model.Unitats.Miner;
 import Utils.BuildManager;
@@ -91,7 +92,7 @@ public class Sketch implements Representable{
         //entityManager.add(new Warrior(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
         entityManager.add(new Miner(WorldManager.xPos() + 100, WorldManager.yPos() + gameHeight / 2 + 50, 12, 0.9, 2));
 
-        //        entityManager.add(new Archer(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9,1));
+        entityManager.add(new Archer(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
 
     }
 
@@ -150,6 +151,9 @@ public class Sketch implements Representable{
             case KeyEvent.VK_SUBTRACT:
                 BuildManager.modifyWallSize(-10);
                 DEBUG.add("Rad: ", (Integer) BuildManager.modifyWallSize(-10));
+                break;
+            case KeyEvent.VK_ESCAPE:
+                BuildManager.abortBuild();
                 break;
             default:
         }

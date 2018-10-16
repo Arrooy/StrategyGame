@@ -231,6 +231,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                         } else if (b instanceof Base) {
                             int goldCollected = ((Miner) this).getGold();
                             if (goldCollected > 0) Resources.add(goldCollected);
+                            else ((Miner) this).repair(b);
                         }
                     }
                     imFreeToMove = false;

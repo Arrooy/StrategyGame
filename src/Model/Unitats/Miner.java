@@ -32,6 +32,7 @@ import static Model.Sketch.minimapManager;
 //Todo: de objetivos para ir a la mina. Teoricamente he apañado(adria) la gestion de la mina hacia la base, pero falta
 //Todo: mejorarlo i añadir la direccion contraria.
 
+//TODO!!!! .> LOS MINERS TIENEN DOS SISTEMAS DE PROGRESSBARS IDENTICOS! UNIFICAR YA.
 public class Miner extends Entity {
 
     public static final int price = 100;
@@ -55,6 +56,8 @@ public class Miner extends Entity {
     private Mine lastMine;
 
     private int goldInHand;
+    private Building repairBuild;
+    private long lastRepair;
 
     public Miner(double x, double y, double maxSpeed, double maxAccel, int team) {
         super(x, y, maxSpeed, maxAccel, maxHp, team);
@@ -83,6 +86,7 @@ public class Miner extends Entity {
                     goldInHand = hp;
                     buildingsManager.remove(actualMine);
                     minimapManager.remove(actualMine);
+                    //TODO: LOOK FOR ANOTHER MINE CLOSE TO THIS !
                     lastMine = null;
                 } else {
                     if (objList.isEmpty()) {
@@ -128,10 +132,13 @@ public class Miner extends Entity {
             g.fill(new Rectangle2D.Double(x, y, s / 2, s / 2));
         }
 
-        if (actualMine != null) {
+        if (actualMine != null || repairBuild != null) {
+
+
             double maxTrainSize = s + 30;
             int height = 5;
             double gap = s / 2.0 + 5;
+
             long trainingTime = HARVEST_TIME;
             long lastTrain = lastHarvest;
 
@@ -175,5 +182,10 @@ public class Miner extends Entity {
             addObjective(new Point2D.Double(lastMine.getCenterX(), lastMine.getCenterY()));
         }
         return aux;
+    }
+
+    public void repair(Building objective) {
+        repairBuild = objective;
+        lastRepair = System.currentTimeMillis();
     }
 }

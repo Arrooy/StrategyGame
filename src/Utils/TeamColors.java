@@ -14,7 +14,6 @@ public class TeamColors {
         colors = new Color[maxNumOfTeams];
         for (int i = 0; i < maxNumOfTeams; i++) {
             colors[i] = new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
-            System.out.println(colors[i].toString());
         }
     }
 
