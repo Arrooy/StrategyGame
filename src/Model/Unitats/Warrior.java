@@ -86,7 +86,7 @@ public class Warrior extends Entity {
                 if (!objList.isEmpty())
                     updateActualObjective(new Point2D.Double(tx, ty));
                 else
-                    addObjective(new Point2D.Double(tx, ty));
+                    addObjective(new Point2D.Double(tx, ty), false);
 
                 if (distance <= ATTACK_RANGE / 2) {
                     if (System.currentTimeMillis() - lastAttack >= attSpeed) {

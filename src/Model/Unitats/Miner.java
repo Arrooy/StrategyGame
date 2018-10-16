@@ -39,6 +39,7 @@ public class Miner extends Entity {
     private static final int TRAINING_TIME = 500;
     private static final long HARVEST_TIME = 2000;
     private static final int HARVEST_AMOUNT = 10;
+    private static final long REAPIR_TIME = 100;
 
     private double attSpeed = 1;
     private int def = 0;
@@ -102,7 +103,7 @@ public class Miner extends Entity {
                             }
                         }
                         if (minDistBase != null) {
-                            addObjective(new Point2D.Double(minDistBase.getCenterX(), minDistBase.getCenterY()));
+                            addObjective(new Point2D.Double(minDistBase.getCenterX(), minDistBase.getCenterY()), true);
                         }
                     }
                     goldInHand = HARVEST_AMOUNT;
@@ -139,9 +140,8 @@ public class Miner extends Entity {
             int height = 5;
             double gap = s / 2.0 + 5;
 
-            long trainingTime = HARVEST_TIME;
-            long lastTrain = lastHarvest;
-
+            long trainingTime = actualMine != null ? HARVEST_TIME : REAPIR_TIME;
+            long lastTrain = actualMine != null ? lastHarvest : lastRepair;
 
             g.setColor(Color.gray);
             g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, maxTrainSize, height));
@@ -179,13 +179,15 @@ public class Miner extends Entity {
         goldInHand = 0;
 
         if (lastMine != null && lastMine.isAlive()) {
-            addObjective(new Point2D.Double(lastMine.getCenterX(), lastMine.getCenterY()));
+            addObjective(new Point2D.Double(lastMine.getCenterX(), lastMine.getCenterY()), false);
         }
         return aux;
     }
 
     public void repair(Building objective) {
-        repairBuild = objective;
-        lastRepair = System.currentTimeMillis();
+        if (goldInHand == 0 && actualMine == null && lastMine == null) {
+            repairBuild = objective;
+            lastRepair = System.currentTimeMillis();
+        }
     }
 }

@@ -97,8 +97,18 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
         return realDamage <= 0 ? 1 : realDamage;
     }
 
-    public void addObjective(Point2D.Double o){
-        objList.put(objectiveID++,o);
+    public void addObjective(Point2D.Double o, boolean override) {
+        if (override) {
+            if (objList.isEmpty()) {
+                objectiveID = 0;
+                lastObjectiveID = 0;
+                objList.put(objectiveID++, o);
+            } else {
+                updateActualObjective(o);
+            }
+        } else {
+            objList.put(objectiveID++, o);
+        }
     }
 
     public void updateActualObjective(Point2D.Double o) {
@@ -208,10 +218,6 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
 
                     size = size + 1;
 
-                    lastObjectiveID = 0;
-                    objectiveID = 0;
-                    objList.clear();
-
                     ax = 0;
                     ay = 0;
                     vx = 0;
@@ -222,7 +228,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
 
 
                     //TODO: ALGORITME PER SOBREPASAR EL EDIFICI
-                    addObjective(new Point2D.Double(x, y));
+                    addObjective(new Point2D.Double(x, y), true);
                     actualObj = new Point2D.Double(x, y);
 
                     if (this instanceof Miner) {

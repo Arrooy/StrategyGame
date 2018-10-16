@@ -134,7 +134,9 @@ public class Sketch implements Representable{
 
     public void keyPressed(int key){
         switch (key) {
-
+            case KeyEvent.VK_CONTROL:
+                Organizer.ctrlPressed(true);
+                break;
             default:
         }
     }
@@ -154,6 +156,9 @@ public class Sketch implements Representable{
                 break;
             case KeyEvent.VK_ESCAPE:
                 BuildManager.abortBuild();
+                break;
+            case KeyEvent.VK_CONTROL:
+                Organizer.ctrlPressed(false);
                 break;
             default:
         }

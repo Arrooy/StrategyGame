@@ -120,7 +120,7 @@ public abstract class Building implements Representable, Selectable, Mappable, M
         double dir = Math.atan2(cy - y, cx - x);
         aux.setLocation(x + Math.cos(dir) * (sx + aux.getSizeX() + 2) / 2, y + Math.sin(dir) * (sy + aux.getSizeY() + 2) / 2);
         entityManager.add(aux);
-        aux.addObjective(new Point2D.Double(this.getSpawnPoint().getX(), this.getSpawnPoint().getY()));
+        aux.addObjective(new Point2D.Double(this.getSpawnPoint().getX(), this.getSpawnPoint().getY()), true);
     }
 
     public void trainProgressBar(Graphics2D g) {

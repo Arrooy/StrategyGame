@@ -38,6 +38,8 @@ public class Organizer {
     private static Point2D firstClick = new Point2D.Double();
     private static Point2D secondClick = new Point2D.Double();
 
+    private static boolean ctrlPressed;
+
     public static void init() {
         points = new LinkedList<>();
         lastTimePointRegistered = 0;
@@ -45,6 +47,8 @@ public class Organizer {
         isFirstClick = false;
         mpMode1 = false;
         mpMode2 = false;
+
+        ctrlPressed = false;
 
         //Periode de mostreig ponderat en ms
         registerPeriod = 10;
@@ -127,6 +131,11 @@ public class Organizer {
         mode = i;
     }
 
+
+    public static void ctrlPressed(boolean state) {
+        ctrlPressed = state;
+    }
+
     //MODE 0
     private static void singlePointFormation() {
         double xPos = WorldManager.xPos(), yPos = WorldManager.yPos();
@@ -136,7 +145,7 @@ public class Organizer {
                 Entity aux = (Entity) s;
                 double ox = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordH(mouseX, aux.getSizeX()) : mouseX + xPos;
                 double oy = Minimap.isMouseOver() ? Minimap.mapCoordToRealCoordV(mouseY, aux.getSizeY()) : mouseY + yPos;
-                aux.addObjective(new Point2D.Double(ox, oy));
+                aux.addObjective(new Point2D.Double(ox, oy), !ctrlPressed);
             }
 
             if (s instanceof Building) {
@@ -159,7 +168,7 @@ public class Organizer {
             Selectable s = MouseSelector.selectedItems().get(i);
             if (s instanceof Entity) {
                 Entity aux = (Entity) s;
-                aux.addObjective(new Point2D.Double(points[i][0], points[i][1]));
+                aux.addObjective(new Point2D.Double(points[i][0], points[i][1]), !ctrlPressed);
             }
         }
     }
@@ -265,7 +274,7 @@ public class Organizer {
                 double y = a.getY() - iy;
                 double nx = x * Math.cos(angle) - y * Math.sin(angle);
                 double ny = x * Math.sin(angle) + y * Math.cos(angle);
-                entity.addObjective(new Point2D.Double(nx + ix, ny + iy));
+                entity.addObjective(new Point2D.Double(nx + ix, ny + iy), !ctrlPressed);
 
                 ax += entity.getSizeX() + spacerX;
                 if (carCount++ % numberOfCars == 0) {
