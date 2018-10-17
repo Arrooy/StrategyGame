@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Animations.Animation;
+import Model.Animations.Animator;
 import Model.CameraControl.WorldManager;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
@@ -42,6 +44,8 @@ public class Sketch implements Representable{
     public static final DedicatedManager<Building> buildingsManager = new DedicatedManager<>();
     public static final DedicatedManager<Mappable> minimapManager = new DedicatedManager<>();
     public static final DedicatedManager<AnimatedText> fxTextManager = new DedicatedManager<>();
+    private Animator animator;
+
 
     private static LinkedList<Double> KEYS_USED;
 
@@ -77,6 +81,7 @@ public class Sketch implements Representable{
         buildingsManager.init();
         fxTextManager.init();
 
+
         for (int i = 0; i < 100; i++)
             buildingsManager.add(new Mine(Math.random() * (gameWidth + WorldManager.getMaxScrollHorizontal()), Math.random() * 100 + WorldManager.yPos() + gameHeight - 100));
 
@@ -94,6 +99,10 @@ public class Sketch implements Representable{
 
         entityManager.add(new Archer(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
 
+
+        LinkedList<Animation> animations = new LinkedList<>();
+        animations.add(new Animation("sheet1.png", 120));
+        animator = new Animator(animations);
     }
 
     @Override
@@ -113,6 +122,7 @@ public class Sketch implements Representable{
         buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
         entityManager.getObjects().forEach((a) -> a.render(g));
         BuildManager.render(g);
+        animator.render(g);
         g.translate(+WorldManager.xPos(), +WorldManager.yPos());
 
         fxTextManager.getObjects().forEach((a) -> a.render(g));

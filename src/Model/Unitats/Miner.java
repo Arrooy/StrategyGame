@@ -39,7 +39,7 @@ public class Miner extends Entity {
     private static final int TRAINING_TIME = 500;
     private static final long HARVEST_TIME = 2000;
     private static final int HARVEST_AMOUNT = 10;
-    private static final long REAPIR_TIME = 100;
+    private static final long REPAIR_TIME = 100;
 
     private double attSpeed = 1;
     private int def = 0;
@@ -115,6 +115,11 @@ public class Miner extends Entity {
             }
             cantMoveImLoading = false;
             actualMine = null;
+        } else if (repairBuild != null && System.currentTimeMillis() - lastRepair >= REPAIR_TIME) {
+            if (repairBuild.heal(1)) {
+                repairBuild = null;
+            }
+            lastRepair = System.currentTimeMillis();
         }
     }
 
@@ -140,7 +145,7 @@ public class Miner extends Entity {
             int height = 5;
             double gap = s / 2.0 + 5;
 
-            long trainingTime = actualMine != null ? HARVEST_TIME : REAPIR_TIME;
+            long trainingTime = actualMine != null ? HARVEST_TIME : REPAIR_TIME;
             long lastTrain = actualMine != null ? lastHarvest : lastRepair;
 
             g.setColor(Color.gray);
@@ -185,7 +190,7 @@ public class Miner extends Entity {
     }
 
     public void repair(Building objective) {
-        if (goldInHand == 0 && actualMine == null && lastMine == null) {
+        if (goldInHand == 0 && actualMine == null && lastMine == null && objective.getInfo().getHp() != objective.getInfo().getMaxHp()) {
             repairBuild = objective;
             lastRepair = System.currentTimeMillis();
         }

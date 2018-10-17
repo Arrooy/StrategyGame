@@ -103,7 +103,7 @@ public class AssetManager {
      * @return imatge solicitada
      */
 
-    public static Image getImage(String nom){
+    public static BufferedImage getImage(String nom) {
         return imatges.get(nom) != null ? imatges.get(nom) : imatges.get("default.png");
     }
 

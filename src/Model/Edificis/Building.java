@@ -250,4 +250,15 @@ public abstract class Building implements Representable, Selectable, Mappable, M
     public void restoreOriginalColor() {
         c = originalColor;
     }
+
+    public boolean heal(int i) {
+        boolean fullHeal = false;
+        hp += i;
+        if (hp > objectInfo.getMaxHp()) {
+            hp = objectInfo.getMaxHp();
+            fullHeal = true;
+        }
+        objectInfo.updateHp(hp);
+        return fullHeal;
+    }
 }
