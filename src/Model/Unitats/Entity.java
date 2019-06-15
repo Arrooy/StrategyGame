@@ -1,5 +1,6 @@
 package Model.Unitats;
 
+import Model.Animations.Character;
 import Model.CameraControl.WorldManager;
 import Model.DataContainers.ObjectInfo;
 import Model.Edificis.Base;
@@ -33,6 +34,8 @@ import static Model.Sketch.buildingsManager;
 //TODO: Algoritmo de obstacle avoidance al tocar un edificio involuntariamente (no en el caso de querer
 //TODO: depositar el oro en una base siendo minero)!
 
+
+//TODO: Update the entity colider!
 public abstract class Entity implements Representable, Selectable, Mappable, Managable, Trainable {
 
     private final int THRESHOLD_STOP_TIME_F = 10;
@@ -63,11 +66,14 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     protected int team;
     protected int hp;
 
-    protected Shape shape;
+    protected Character character;
+    private double heading;
 
     public Entity(double x, double y, double maxSpeed, double maxAccel, int hp, int team) {
         this.x = x;
         this.y = y;
+        this.heading = 0;
+
         this.hp = hp;
         objList = new ConcurrentHashMap<>();
         this.maxSpeed = maxSpeed;
@@ -97,7 +103,25 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
         return realDamage <= 0 ? 1 : realDamage;
     }
 
+    private void updateCharacterAnimation(Point2D.Double o) {
+        heading = Math.toDegrees(Math.atan2(o.getY() - y, o.getX() - x));
+
+        if (heading >= 0 && heading <= 45 || heading <= 0 && heading >= -45) {
+            character.changeAnimation(7);
+        }
+        if (heading > 45 && heading <= 135) {
+            character.changeAnimation(5);
+        }
+        if (heading > 135 && heading < 180 || heading >= -180 && heading <= -135) {
+            character.changeAnimation(3);
+        }
+        if (heading > -135 && heading < -45) {
+            character.changeAnimation(1);
+        }
+    }
+
     public void addObjective(Point2D.Double o, boolean override) {
+
         if (override) {
             if (objList.isEmpty()) {
                 objectiveID = 0;
@@ -113,6 +137,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
 
     public void updateActualObjective(Point2D.Double o) {
         objList.get(objectiveID - 1).setLocation(o);
+        updateCharacterAnimation(o);
     }
 
     private void calculateMovement(){
@@ -162,6 +187,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                 if(!objList.isEmpty()){
                     actualObj = objList.get(lastObjectiveID);
                     THRESHOLD_STOP_DIST = THRESHOLD_STOP_DIST_F;
+                    updateCharacterAnimation(actualObj);
                     estat++;
                 }
                 break;
@@ -180,6 +206,7 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
                 vx = 0;
                 vy = 0;
                 estat = 0;
+                character.stop();
                 break;
             case 3:
                 if(System.currentTimeMillis() - lastMillis > THRESHOLD_STOP_TIME){
@@ -365,5 +392,9 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
 
     public int getTeam() {
         return team;
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 }

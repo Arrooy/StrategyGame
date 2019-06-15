@@ -1,5 +1,7 @@
 package Model.Animations;
 
+import Utils.DEBUG;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
@@ -10,8 +12,8 @@ public class Animation {
     private int actualFrame;
     private int frameSize;
 
-    public Animation(String sheetName, long framePeriod) {
-        this.frames = SheetCutter.obtainFrames(sheetName);
+    public Animation(LinkedList<BufferedImage> frames, long framePeriod) {
+        this.frames = frames;
         this.framePeriod = framePeriod;
         this.frameSize = frames.size();
         actualFrame = 0;
@@ -19,7 +21,7 @@ public class Animation {
     }
 
     public BufferedImage getFrame() {
-        System.out.println("GETTING " + actualFrame);
+        DEBUG.add("FRAME: ", (Integer) actualFrame);
         return frames.get(actualFrame);
     }
 
@@ -32,11 +34,12 @@ public class Animation {
         return lastTime;
     }
 
-    public long getPriod() {
+    public long getPeriod() {
         return framePeriod;
     }
 
     public void updateLastTime(long currentTimeMillis) {
         lastTime = currentTimeMillis;
     }
+
 }

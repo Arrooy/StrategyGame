@@ -2,6 +2,7 @@ package Model.UI.Mouse_Area_Selection;
 
 import Model.MassiveListManager.Managable;
 import Model.Unitats.Entity;
+import Utils.DEBUG;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -159,6 +160,9 @@ public class MouseSelector {
             }
 
             g.fill(rect);
+            DEBUG.add("Selection width:", ((Rectangle2D.Double) rect).width);
+            DEBUG.add("Selection height:", ((Rectangle2D.Double) rect).height);
+
             g.setColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),255));
             g.draw(rect);
         }

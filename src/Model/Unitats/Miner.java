@@ -5,7 +5,7 @@ import Model.Actions.DestroyMeAction;
 import Model.Actions.Entities.BuildABarrack;
 import Model.Actions.Entities.BuildABase;
 import Model.Actions.Entities.BuildASimpleWall;
-import Model.CShape;
+import Model.Animations.Character;
 import Model.DataContainers.ObjectInfo;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
@@ -70,6 +70,10 @@ public class Miner extends Entity {
         actions[3] = new DestroyMeAction(this);
         img = "prev_miner.png";
 
+        character = new Character(500, 100, Character.WEAR.BASIC.getComp());
+
+        s = character.getSize();
+
         goldInHand = 0;
         c = TeamColors.getMyColor(team);
 
@@ -130,8 +134,11 @@ public class Miner extends Entity {
             g.draw(new Rectangle2D.Double(p.getX() - s / 2,p.getY() - s / 2,s,s));
         });
 
-        g.setColor(selected ? c.darker() : c);
-        g.fill(CShape.miner(x, y, s));
+        Image[] frames = character.getFrame();
+        for (Image i : frames) {
+            g.drawImage(i, ((int) (x - s / 2.0)), ((int) (y - s / 2.0)), null);
+        }
+
 
         if (goldInHand != 0) {
             g.setColor(new Color(200, 171, 0));

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import static java.awt.Image.SCALE_DEFAULT;
@@ -25,19 +26,28 @@ public class AssetManager {
     /** Conjunt d'imatges de la UI*/
     private static Map<String, BufferedImage> imatges;
 
+    /**
+     * Conjunt d'imatges per carpetes
+     */
+    private static Map<String, LinkedList<BufferedImage>> folders;
+
     /** Carrega tot el contingut del joc*/
     public static void loadData() {
-        loadImatges();
+        imatges = new HashMap<>();
+        folders = new HashMap<>();
+
+        loadImatges(PATH_IMATGES);
         Sounds.loadAllSounds();
     }
 
     /** Carrega les imatges de la UI*/
-    private static void loadImatges(){
-        //Es llegeix la carpeta indicada en PATH_IMATGES
-        File carpetaAssetsCartes = new File(PATH_IMATGES);
-        File[] listOfFiles = carpetaAssetsCartes.listFiles();
+    private static void loadImatges(String pathToLoad) {
+        //Es llegeix la carpeta indicada en pathToLoad
+        File carpeta = new File(pathToLoad);
+        File[] listOfFiles = carpeta.listFiles();
 
-        imatges = new HashMap<>();
+        LinkedList<BufferedImage> listOfImages = new LinkedList<>();
+        folders.put(carpeta.getName(), listOfImages);
 
         //Si la carpeta existeix
         if (listOfFiles != null) {
@@ -45,8 +55,11 @@ public class AssetManager {
             for (File foto : listOfFiles) {
                 BufferedImage img = null;
 
-                if(!checkExtension(foto))
+                if (!checkExtension(foto)) {
+                    if (foto.isDirectory()) loadImatges(foto.getAbsolutePath());
                     continue;
+                }
+
                 try {
                     //Es llegeix la foto
                     img = ImageIO.read(foto);
@@ -58,12 +71,12 @@ public class AssetManager {
                 if (img != null) {
                     //Si la lectura ha sigut correcte, es guarda la imatge
                     imatges.put(foto.getName(), img);
-
+                    listOfImages.add(img);
                     //S'indica en la loadingScreen l'estat de la carrega
                     //System.out.println("Loaded " + imatges.size() + " UI images.");
                 }
             }
-            System.out.println("Loaded " + imatges.size() + " UI images.");
+            System.out.println("Loaded " + imatges.size() + "  images from " + carpeta.getName());
         }
     }
 
@@ -104,7 +117,25 @@ public class AssetManager {
      */
 
     public static BufferedImage getImage(String nom) {
-        return imatges.get(nom) != null ? imatges.get(nom) : imatges.get("default.png");
+        if (!nom.contains(".png")) nom += ".png";
+        if (!imatges.containsKey(nom)) {
+            System.out.println("Img: " + nom + " no existeix. (AssetManager)");
+        }
+        return imatges.get(nom);
+    }
+
+    /**
+     * Retorna una imatge de la UI
+     *
+     * @param nom nom de la imatge que es vol obtenir
+     * @return imatge solicitada
+     */
+
+    public static LinkedList<BufferedImage> getFolder(String nom) {
+        if (!folders.containsKey(nom)) {
+            System.out.println("Folder: " + nom + " no existeix. (AssetManager)");
+        }
+        return folders.get(nom);
     }
 
 

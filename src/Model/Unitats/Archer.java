@@ -2,6 +2,7 @@ package Model.Unitats;
 
 import Model.Actions.Action;
 import Model.Actions.DestroyMeAction;
+import Model.Animations.Character;
 import Model.CShape;
 import Model.CameraControl.WorldManager;
 import Model.DataContainers.ObjectInfo;
@@ -53,6 +54,9 @@ public class Archer extends Entity {
         actions[0] = new DestroyMeAction(this);
 
         objectInfo = new ObjectInfo(maxHp, maxHp, dmg, def, attSpeed, maxSpeed, team, img, actions);
+
+        character = new Character(500, 100, Character.WEAR.BASIC.getComp());
+
         target = null;
         lastAttack = 0;
         heading = 0;

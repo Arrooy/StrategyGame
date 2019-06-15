@@ -1,7 +1,7 @@
 package Model;
 
-import Model.Animations.Animation;
 import Model.Animations.Animator;
+import Model.Animations.Character;
 import Model.CameraControl.WorldManager;
 import Model.Edificis.Base;
 import Model.Edificis.Building;
@@ -64,7 +64,6 @@ public class Sketch implements Representable{
         return nextRandom;
     }
 
-
     public void initSketch(){
 
         SelectionVisualitzer.init();
@@ -99,10 +98,9 @@ public class Sketch implements Representable{
 
         entityManager.add(new Archer(WorldManager.xPos() + gameWidth / 2, WorldManager.yPos() + gameHeight / 2 + 75, 12, 0.9, 1));
 
-
-        LinkedList<Animation> animations = new LinkedList<>();
-        animations.add(new Animation("sheet1.png", 120));
-        animator = new Animator(animations);
+        LinkedList<Character> characters = new LinkedList<>();
+        for (Entity e : entityManager.getObjects()) characters.add(e.getCharacter());
+        animator = new Animator(characters);
     }
 
     @Override
@@ -122,7 +120,7 @@ public class Sketch implements Representable{
         buildingsManager.getObjects().forEach((a) -> a.baseRender(g));
         entityManager.getObjects().forEach((a) -> a.render(g));
         BuildManager.render(g);
-        animator.render(g);
+
         g.translate(+WorldManager.xPos(), +WorldManager.yPos());
 
         fxTextManager.getObjects().forEach((a) -> a.render(g));
@@ -130,7 +128,6 @@ public class Sketch implements Representable{
         FormationVisualitzer.render(g);
         MouseSelector.render(g);
         Resources.render(g);
-
         SelectionVisualitzer.render(g);
     }
 

@@ -2,6 +2,7 @@ package Model.Unitats;
 
 import Model.Actions.Action;
 import Model.Actions.DestroyMeAction;
+import Model.Animations.Character;
 import Model.CShape;
 import Model.CameraControl.WorldManager;
 import Model.DataContainers.ObjectInfo;
@@ -54,6 +55,7 @@ public class Warrior extends Entity {
 
         c = TeamColors.getMyColor(team);
 
+        character = new Character(500, 100, "miner_body.png");
 
         actions = new Action[1];
         actions[0] = new DestroyMeAction(this);
