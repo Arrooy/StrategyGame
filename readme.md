@@ -4,7 +4,7 @@ Si no sabes que hacer, revisa los _TODO_.
 
 Añade lo que quieras al juego siempre que el codigo que subas sea **ESTABLE**
 
-## LISTA DE ILUSIONES:
+## GOALS:
 
 .> Tema para el juego
 
