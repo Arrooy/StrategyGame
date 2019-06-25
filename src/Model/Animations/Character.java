@@ -98,16 +98,14 @@ public class Character {
     }
 
     public enum WEAR {
-        BASIC("walkcycle", "BODY_male.png", "FEET_shoes_brown.png", "LEGS_robe_skirt",
-                "TORSO_robe_shirt_brown.png", "TORSO_leather_armor_bracers.png",
-                "BELT_leather.png", "HEAD_chain_armor_hood.png", "HANDS_plate_armor_gloves.png"),
+        BASIC("BODY_male_walkcycle.png", "FEET_shoes_brown_walkcycle.png", "LEGS_robe_skirt_walkcycle",
+                "TORSO_robe_shirt_brown_walkcycle.png", "TORSO_leather_armor_bracers_walkcycle.png",
+                "BELT_leather_walkcycle.png", "HEAD_chain_armor_hood_walkcycle.png", "HANDS_plate_armor_gloves_walkcycle.png"),
         HEAVY("");
 
         private String[] comp;
-        private String folder;
 
-        WEAR(String folder, String... complementos) {
-            this.folder = folder;
+        WEAR(String... complementos) {
             comp = complementos;
         }
 
@@ -115,8 +113,5 @@ public class Character {
             return comp;
         }
 
-        public String getFolder() {
-            return folder;
-        }
     }
 }
