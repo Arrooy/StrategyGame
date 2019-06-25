@@ -23,7 +23,7 @@ public class SimpleWall extends Building {
 
         this.outerRad = outerRad;
 
-        Action actions[] = new Action[1];
+        Action[] actions = new Action[1];
         actions[0] = new DestroyMeAction(this);
 
 

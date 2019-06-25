@@ -9,7 +9,6 @@ import javax.swing.*;
 /**
  * Las dos variables estaticas permiten decidir un tamaño al juego, dada la posibilidad que
  * el SO no permita FULLSCREEN
- * AVISO: SE HAN VISTO CODIGOS MAS LIMPIOS...eslokayxd
  */
 
 //TODO: Mirar como repercute el uso del sistema Sketch,Controller,Updater y sus threads conjuntamente con swing
@@ -24,7 +23,7 @@ public class Main {
 
         AssetManager.loadData();
 
-        Vista vista = new Vista(minWidth,minHeight,"Particles");
+        Vista vista = new Vista(minWidth, minHeight, "StrategyGame");
         Sketch e = new Sketch();
         Controller controller = new Controller(vista,e);
 
@@ -49,6 +48,7 @@ public class Main {
                 e.initSketch();
                 controller.start();
                 up.start();
+                controller.frameSizeChanged(vista.getWidth(), vista.getHeight());
             }
         });
     }

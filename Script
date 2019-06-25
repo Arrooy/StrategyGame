@@ -1,0 +1,13 @@
+#!/bin/bash
+for folderName in /home/arroyo/Projectes/Projectes-Intellij/StrategyGame/assets/Images/characters/*; do
+  for file in $folderName/*.png;do
+    name=${file##*/}
+    folder=${folderName##*/}
+    baseName=${name%.png}
+    x="_"
+    extension=".png"
+    main="/home/arroyo/Projectes/Projectes-Intellij/StrategyGame/assets/Images/characters/$folder/"
+    aux=$baseName$x$folder$extension
+    mv $main$name $main$aux
+  done
+done

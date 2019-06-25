@@ -36,8 +36,8 @@ public class Vista extends JFrame {
 
         requestFocus();
         setUndecorated(true);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         centerInScreen();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
 

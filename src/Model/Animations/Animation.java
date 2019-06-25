@@ -22,6 +22,7 @@ public class Animation {
 
     public BufferedImage getFrame() {
         DEBUG.add("FRAME: ", (Integer) actualFrame);
+        if (frames.isEmpty()) return null;
         return frames.get(actualFrame);
     }
 

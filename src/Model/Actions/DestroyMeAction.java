@@ -8,8 +8,8 @@ import static Model.Sketch.*;
 
 public class DestroyMeAction extends Action {
 
-    public DestroyMeAction(Selectable a) {
-        super("action_destroy", a);
+    public DestroyMeAction(Selectable actuator) {
+        super("action_destroy", actuator);
     }
 
     @Override

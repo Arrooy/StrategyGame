@@ -87,7 +87,7 @@ public class AssetManager {
      */
     private static boolean checkExtension(File foto) {
         for(CharSequence ext : AcceptedExtensions){
-            if(foto.getName().contains(ext))return true;
+            if (foto.getName().contains(ext)) return true;
         }
         return false;
     }
