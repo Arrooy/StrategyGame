@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class Character {
 
-    public static final int SIZE = 64;
+    public static final int SIZE = 32;
 
     private Map<String, Animation> animations;
     private int actualAnimation;
@@ -45,17 +45,17 @@ public class Character {
 
         for (String s : complementos) {
 
-            animations.put("up_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, 0, 64, 64, 1), idlePeriod));
-            animations.put("up_m_" + s, new Animation(SheetCutter.obtainFrames(s, 64, 0, 64, 64, 8), movePeriod));
+            animations.put("up_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, 0, SIZE, SIZE, 1), idlePeriod));
+            animations.put("up_m_" + s, new Animation(SheetCutter.obtainFrames(s, SIZE, 0, SIZE, SIZE, 8), movePeriod));
 
-            animations.put("left_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, 64, 64, 64, 1), idlePeriod));
-            animations.put("left_m_" + s, new Animation(SheetCutter.obtainFrames(s, 64, 64, 64, 64, 8), movePeriod));
+            animations.put("left_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, SIZE, SIZE, SIZE, 1), idlePeriod));
+            animations.put("left_m_" + s, new Animation(SheetCutter.obtainFrames(s, SIZE, SIZE, SIZE, SIZE, 8), movePeriod));
 
-            animations.put("down_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, 128, 64, 64, 1), idlePeriod));
-            animations.put("down_m_" + s, new Animation(SheetCutter.obtainFrames(s, 64, 128, 64, 64, 8), movePeriod));
+            animations.put("down_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, SIZE * 2, SIZE, SIZE, 1), idlePeriod));
+            animations.put("down_m_" + s, new Animation(SheetCutter.obtainFrames(s, SIZE, SIZE * 2, SIZE, SIZE, 8), movePeriod));
 
-            animations.put("right_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, 192, 64, 64, 1), idlePeriod));
-            animations.put("right_m_" + s, new Animation(SheetCutter.obtainFrames(s, 64, 192, 64, 64, 8), movePeriod));
+            animations.put("right_idle_" + s, new Animation(SheetCutter.obtainFrames(s, 0, SIZE * 2 + SIZE, SIZE, SIZE, 1), idlePeriod));
+            animations.put("right_m_" + s, new Animation(SheetCutter.obtainFrames(s, SIZE, SIZE * 2 + SIZE, SIZE, SIZE, 8), movePeriod));
         }
     }
 
@@ -98,9 +98,9 @@ public class Character {
     }
 
     public enum WEAR {
-        BASIC("BODY_male_walkcycle.png", "FEET_shoes_brown_walkcycle.png", "LEGS_robe_skirt_walkcycle",
-                "TORSO_robe_shirt_brown_walkcycle.png", "TORSO_leather_armor_bracers_walkcycle.png",
-                "BELT_leather_walkcycle.png", "HEAD_chain_armor_hood_walkcycle.png", "HANDS_plate_armor_gloves_walkcycle.png"),
+        BASIC("BODY_male_walkcycle_small.png", "FEET_shoes_brown_walkcycle_small.png", "LEGS_robe_skirt_walkcycle_small",
+                "TORSO_robe_shirt_brown_walkcycle_small.png", "TORSO_leather_armor_bracers_walkcycle_small.png",
+                "BELT_leather_walkcycle_small.png", "HEAD_chain_armor_hood_walkcycle_small.png", "HANDS_plate_armor_gloves_walkcycle_small.png"),
         HEAVY("");
 
         private String[] comp;

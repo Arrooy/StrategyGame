@@ -4,10 +4,15 @@ for folderName in /home/arroyo/Projectes/Projectes-Intellij/StrategyGame/assets/
     name=${file##*/}
     folder=${folderName##*/}
     baseName=${name%.png}
-    x="_"
-    extension=".png"
-    main="/home/arroyo/Projectes/Projectes-Intellij/StrategyGame/assets/Images/characters/$folder/"
-    aux=$baseName$x$folder$extension
-    mv $main$name $main$aux
+    path="/home/arroyo/Projectes/Projectes-Intellij/StrategyGame/assets/Images/characters/$folder/"
+    height=$(identify -format "%h" $path$name)
+    width=$(identify -format "%w" $path$name)
+    nwidth=$((width / 2))
+    nheight=$((height / 2))
+    kk="x"
+    addon="_small.png"
+    #echo "$width $height $nwidth $nheight"
+    convert $path$name -resize $nwidth$kk$nheight $path$baseName$addon
+
   done
 done
