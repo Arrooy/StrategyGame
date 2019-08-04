@@ -63,6 +63,8 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
     boolean imFreeToMove = false;
     protected boolean cantMoveImLoading = false;
 
+    protected boolean iDontNeedAttention = true;
+
     protected int team;
     protected int hp;
 
@@ -186,9 +188,12 @@ public abstract class Entity implements Representable, Selectable, Mappable, Man
             case 0:
                 if(!objList.isEmpty()){
                     actualObj = objList.get(lastObjectiveID);
+                    iDontNeedAttention = false;
                     THRESHOLD_STOP_DIST = THRESHOLD_STOP_DIST_F;
                     updateCharacterAnimation(actualObj);
                     estat++;
+                } else {
+                    iDontNeedAttention = true;
                 }
                 break;
 

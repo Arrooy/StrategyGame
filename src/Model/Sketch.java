@@ -39,12 +39,15 @@ import static Controlador.Controller.*;
 
 public class Sketch implements Representable{
 
-    public static final DedicatedManager<Entity> entityManager = new DedicatedManager();
-    public static final DedicatedManager<Building> buildingsManager = new DedicatedManager<>();
-    public static final DedicatedManager<Mappable> minimapManager = new DedicatedManager<>();
-    public static final DedicatedManager<AnimatedText> fxTextManager = new DedicatedManager<>();
-    private Animator animator;
 
+    public static final DedicatedManager<Entity> entityManager = new DedicatedManager<>("Entity");
+    public static final DedicatedManager<Building> buildingsManager = new DedicatedManager<>("Buildings");
+    public static final DedicatedManager<Mappable> minimapManager = new DedicatedManager<>("Mappable");
+    public static final DedicatedManager<AnimatedText> fxTextManager = new DedicatedManager<>("Animated Text");
+    private long RenderTime = 0;
+    private long MaxRenderTime = 0;
+    private long cleanTime = 0;
+    private long updateTime = 0;
 
     private static LinkedList<Double> KEYS_USED;
 
@@ -87,7 +90,7 @@ public class Sketch implements Representable{
 
         //buildingsManager.add(new SimpleWall(WorldManager.xPos() + gameWidth / 2 - 100, WorldManager.yPos() + gameHeight / 2, 200, 1));
 
-        int initNWorkers = 15;
+        int initNWorkers = 10;
         int unitSize = 11;
         for (int i = 0; i < initNWorkers; i++)
             entityManager.add(new Miner(WorldManager.xPos() + gameWidth / 2 - unitSize / 2 * initNWorkers + unitSize * i, WorldManager.yPos() + gameHeight / 2 + 50, 12, 0.9, 1));
@@ -99,20 +102,26 @@ public class Sketch implements Representable{
 
         LinkedList<Character> characters = new LinkedList<>();
         for (Entity e : entityManager.getObjects()) characters.add(e.getCharacter());
-        animator = new Animator(characters);
+
+        Animator animator = new Animator(characters);
     }
 
     @Override
     public void update() {
         SelectionVisualitzer.update();
-        WorldManager.update();
+
         Organizer.update();
         BuildManager.update();
     }
 
     @Override
     public void render(Graphics2D g) {
+        RenderTime = System.currentTimeMillis();
+
         DEBUG.render(g);
+
+        WorldManager.update();
+
         g.translate(-WorldManager.xPos(), -WorldManager.yPos());
 
         Organizer.render(g);
@@ -128,6 +137,21 @@ public class Sketch implements Representable{
         MouseSelector.render(g);
         Resources.render(g);
         SelectionVisualitzer.render(g);
+
+        RenderTime = System.currentTimeMillis() - RenderTime;
+
+        if (System.currentTimeMillis() - cleanTime > 10000) {
+            MaxRenderTime = 0;
+            cleanTime = System.currentTimeMillis();
+        }
+
+        if (RenderTime > MaxRenderTime)
+            MaxRenderTime = RenderTime;
+
+
+        DEBUG.add("Render Time [ms] : ", RenderTime);
+        DEBUG.add("Max Render Time [ms] : ", MaxRenderTime);
+        DEBUG.add("FPS : ", 1000 / RenderTime);
     }
 
 

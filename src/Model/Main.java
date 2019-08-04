@@ -16,14 +16,12 @@ import javax.swing.*;
 
 public class Main {
 
-    static int minWidth = 500, minHeight = 500;
-
     public static void main(String[] args) {
 
 
         AssetManager.loadData();
 
-        Vista vista = new Vista(minWidth, minHeight, "StrategyGame");
+        Vista vista = new Vista("StrategyGame");
         Sketch e = new Sketch();
         Controller controller = new Controller(vista,e);
 

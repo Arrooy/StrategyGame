@@ -277,6 +277,7 @@ public class Organizer {
                 entity.addObjective(new Point2D.Double(nx + ix, ny + iy), !ctrlPressed);
 
                 ax += entity.getSizeX() + spacerX;
+                if (numberOfCars == 0) continue;//Lleig pero no es el meu algoritme + no vull perdre el temps.
                 if (carCount++ % numberOfCars == 0) {
                     ax = ix;
                     aux++;

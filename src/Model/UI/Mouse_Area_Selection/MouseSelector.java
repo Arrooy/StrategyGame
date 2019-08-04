@@ -94,6 +94,9 @@ public class MouseSelector {
             usingADoubleClick = false;
         } else {
             selecting = false;
+            DEBUG.remove("Selection width:");
+            DEBUG.remove("Selection height:");
+
             for (Selectable s : selectables) {
                 s.setSelected(almostInsideTheSelectionArea(s) || insideTheSelectionClick(s));
                 if (s.isSelected()) selected.add(s);
@@ -143,7 +146,7 @@ public class MouseSelector {
 
             Color c = new Color(100,100,100,50);
             g.setColor(c);
-            Rectangle2D rect;
+            Rectangle2D.Double rect;
 
             if((mouseX - ix) < 0 && !(mouseY - iy < 0)) {
                 quadrante = 3;
@@ -160,8 +163,8 @@ public class MouseSelector {
             }
 
             g.fill(rect);
-            DEBUG.add("Selection width:", ((Rectangle2D.Double) rect).width);
-            DEBUG.add("Selection height:", ((Rectangle2D.Double) rect).height);
+            DEBUG.add("Selection width:", rect.width);
+            DEBUG.add("Selection height:", rect.height);
 
             g.setColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),255));
             g.draw(rect);

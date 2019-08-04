@@ -120,8 +120,10 @@ public class Miner extends Entity {
             cantMoveImLoading = false;
             actualMine = null;
         } else if (repairBuild != null && System.currentTimeMillis() - lastRepair >= REPAIR_TIME) {
+            //cantMoveImLoading = false;
             if (repairBuild.heal(1)) {
                 repairBuild = null;
+                //cantMoveImLoading = false;
             }
             lastRepair = System.currentTimeMillis();
         }
@@ -133,6 +135,7 @@ public class Miner extends Entity {
             g.setColor(Color.red);
             g.draw(new Rectangle2D.Double(p.getX() - s / 2,p.getY() - s / 2,s,s));
         });
+
 
         Image[] frames = character.getFrame();
         for (Image i : frames) {
@@ -161,6 +164,7 @@ public class Miner extends Entity {
             g.setColor(Color.blue);
             g.fill(new Rectangle2D.Double(x - maxTrainSize / 2, y - gap - height, (System.currentTimeMillis() - lastTrain) * maxTrainSize / trainingTime, height));
         }
+
     }
 
     @Override

@@ -1,7 +1,5 @@
 package Model.Animations;
 
-import Utils.DEBUG;
-
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
@@ -21,7 +19,7 @@ public class Animation {
     }
 
     public BufferedImage getFrame() {
-        DEBUG.add("FRAME: ", (Integer) actualFrame);
+        //DEBUG.add("FRAME: ", (Integer) actualFrame);
         if (frames.isEmpty()) return null;
         return frames.get(actualFrame);
     }

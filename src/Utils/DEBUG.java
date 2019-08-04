@@ -10,7 +10,7 @@ public class DEBUG {
     private static LinkedList<DebugMessage> debugList;
     private static int y = 0;
 
-    public static void add(String intro, Object valueReference) {
+    public static synchronized void add(String intro, Object valueReference) {
         if (debugList == null) debugList = new LinkedList<>();
         boolean flag = false;
 
@@ -23,6 +23,17 @@ public class DEBUG {
 
         if (!flag) {
             debugList.add(new DebugMessage(intro, valueReference));
+        }
+    }
+
+    public static void remove(String intro) {
+        if (debugList == null) return;
+        for (int i = debugList.size() - 1; i >= 0; i--) {
+            DebugMessage m = debugList.get(i);
+            if (m.getIntro().equals(intro)) {
+                debugList.remove(i);
+                return;
+            }
         }
     }
 

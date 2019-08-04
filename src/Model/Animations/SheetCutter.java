@@ -13,7 +13,6 @@ public class SheetCutter {
 
         //System.out.println(sheet.getWidth() + " imgH " + sheet.getHeight());
 
-
         for (int i = 0; i < num; i++) {
 
             try {

@@ -29,32 +29,32 @@ public class WorldManager {
 
         if (xPos > cameraSpeed && mouseX < margin && mouseY > margin && mouseY < gameHeight - margin) {
             //Lateral esquerra
-            xPos -= cameraSpeed;
+            IncxPos(-cameraSpeed);
         } else if (xPos < maxScrollHorizontal - cameraSpeed && mouseX > gameWidth - margin && mouseY > margin && mouseY < gameHeight - margin) {
             //Lateral dret
-            xPos += cameraSpeed;
+            IncxPos(cameraSpeed);
         } else if (mouseX > gameWidth - margin && mouseY <= margin) {
             //Esquina superior dreta
-            if(xPos < maxScrollHorizontal - cameraSpeed) xPos += cameraSpeed;
-            if(yPos > cameraSpeed) yPos -= cameraSpeed;
+            if (xPos < maxScrollHorizontal - cameraSpeed) IncxPos(cameraSpeed);
+            if (yPos > cameraSpeed) IncyPos(-cameraSpeed);
         } else if (mouseX > gameWidth - margin && mouseY >= gameHeight - margin) {
             //Esquina inferior dreta
-            if(xPos < maxScrollHorizontal - cameraSpeed) xPos += cameraSpeed;
-            if(yPos < maxScrollVertical - cameraSpeed) yPos += cameraSpeed;
+            if (xPos < maxScrollHorizontal - cameraSpeed) IncxPos(cameraSpeed);
+            if (yPos < maxScrollVertical - cameraSpeed) IncyPos(cameraSpeed);
         } else if (mouseX < margin && mouseY >= gameHeight - margin) {
             //Esquina inferior esquerra
-            if(xPos > cameraSpeed) xPos -= cameraSpeed;
-            if(yPos < maxScrollVertical - cameraSpeed) yPos += cameraSpeed;
+            if (xPos > cameraSpeed) IncxPos(-cameraSpeed);
+            if (yPos < maxScrollVertical - cameraSpeed) IncyPos(cameraSpeed);
         } else if (mouseX < margin && mouseY <= margin) {
             //Esquina superior esquerra
-            if(xPos > cameraSpeed) xPos -= cameraSpeed;
-            if(yPos > cameraSpeed) yPos -= cameraSpeed;
+            if (xPos > cameraSpeed) IncxPos(-cameraSpeed);
+            if (yPos > cameraSpeed) IncyPos(-cameraSpeed);
         } else if (yPos > cameraSpeed && mouseX < gameWidth - margin && mouseY < margin && mouseX > margin) {
             //Lateral superior
-            yPos -= cameraSpeed;
+            IncyPos(-cameraSpeed);
         } else if (yPos < maxScrollVertical - cameraSpeed && mouseX < gameWidth - margin && mouseY > gameHeight - margin && mouseX > margin) {
             //Lateral inferior
-            yPos += cameraSpeed;
+            IncyPos(cameraSpeed);
         }
     }
 
@@ -66,11 +66,21 @@ public class WorldManager {
         return maxScrollVertical;
     }
 
-    public static int xPos() {
+    public static synchronized int xPos() {
         return xPos;
     }
 
-    public static int yPos() {
+    public static synchronized int yPos() {
         return yPos;
     }
+
+    public static synchronized void IncyPos(int val) {
+        yPos += val;
+    }
+
+    public static synchronized void IncxPos(int val) {
+        xPos += val;
+    }
+
+
 }

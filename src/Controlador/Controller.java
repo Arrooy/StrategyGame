@@ -47,6 +47,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
         this.r = r;
     }
 
+    private boolean ww = false;
     private void render(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -86,6 +87,7 @@ public class Controller extends Thread implements KeyListener, MouseInputListene
 
     @Override
     public void keyReleased(KeyEvent e) {
+
         r.keyReleased(e.getKeyCode());
     }
 

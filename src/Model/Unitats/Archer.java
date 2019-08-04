@@ -60,7 +60,7 @@ public class Archer extends Entity {
         target = null;
         lastAttack = 0;
         heading = 0;
-        distToBow = s / 2 + bowSize / 2 + bowGap;
+        distToBow = s / 2 + bowSize / 2.0 + bowGap;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Archer extends Entity {
         if (target == null) {
             //No hi ha target, busquem un
             for (Entity e : entityManager.getObjects()) {
-                if (e.getTeam() != team && dist(this, e) <= VISION_RANGE / 2) {
+                if (e.getTeam() != team && dist(this, e) <= VISION_RANGE / 2.0) {
                     //Es un enemic i esta en rango.
                     target = e;
                     break;
@@ -77,11 +77,11 @@ public class Archer extends Entity {
         } else {
             //Target localitzat, ens dirigim a atacarlo
             double distance = dist(this, target);
-            if (distance <= VISION_RANGE / 2) {
+            if (distance <= VISION_RANGE / 2.0) {
                 heading = Math.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX());
 
                 //TODO: NO FER DAMAGE DIRECTAMENT, SINO QUE INVENTAR UN PROJECTIL
-                if (distance <= ATTACK_RANGE / 2) {
+                if (distance <= ATTACK_RANGE / 2.0) {
                     if (System.currentTimeMillis() - lastAttack >= attSpeed) {
                         int realDamage = target.calculateRealDamage(dmg);
                         boolean isDead = target.getDamage(realDamage);
@@ -116,7 +116,7 @@ public class Archer extends Entity {
         g.fill(CShape.archer(x, y, s));
 
         g.setColor(selected ? c.darker() : c);
-        g.fill(new Rectangle2D.Double(x - bowSize / 2 + Math.cos(heading) * distToBow, y - bowSize / 2 + Math.sin(heading) * distToBow, bowSize, bowSize));
+        g.fill(new Rectangle2D.Double(x - bowSize / 2.0 + Math.cos(heading) * distToBow, y - bowSize / 2.0 + Math.sin(heading) * distToBow, bowSize, bowSize));
     }
 
 

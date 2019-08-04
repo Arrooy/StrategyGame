@@ -59,6 +59,7 @@ public class BuildManager {
     }
 
     public static void abortBuild(){
+        if (blueprint == null) return;
         Resources.add(blueprint.getPrice());
         blueprint = null;
     }
@@ -100,7 +101,6 @@ public class BuildManager {
 
             DEBUG.add("blueprint x is ", blueprint.getCenterX());
             DEBUG.add("blueprint y is ", blueprint.getCenterY());
-
 
             //g.fill(new Rectangle2D.Double(blueprint.getLX(), blueprint.getUY(), blueprint.getWidth(), blueprint.getHeigth()));
             blueprint.setColor(c);

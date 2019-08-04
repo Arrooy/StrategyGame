@@ -53,12 +53,6 @@ public class Minimap {
         g.setColor(normalColorB);
         g.setStroke(new BasicStroke(strokeSize));
         g.draw(rect);
-        g.setStroke(new BasicStroke(1));
-
-        g.setColor(Color.blue);
-        double xx = WorldManager.xPos() * sx / widthToMap;
-        double yy = gameHeight - sy + WorldManager.yPos() * sy / heightToMap;
-        g.draw(new Rectangle2D.Double(xx,yy,gameWidth * sx / widthToMap,gameHeight * sx / heightToMap));
 
         minimapManager.getObjects().forEach((m) -> {
             double ax = m.getCenterX() * (sx - m.getMapSizeX()) / widthToMap;
@@ -67,6 +61,12 @@ public class Minimap {
             g.setColor(m.getMapColor());
             g.fill(new Rectangle2D.Double(ax - m.getMapSizeX() / 2,ay, m.getMapSizeX(), m.getMapSizeY()));
         });
+
+        g.setStroke(new BasicStroke(1));
+        g.setColor(Color.blue);
+        double xx = WorldManager.xPos() * sx / widthToMap;
+        double yy = gameHeight - sy + WorldManager.yPos() * sy / heightToMap;
+        g.draw(new Rectangle2D.Double(xx, yy, gameWidth * sx / widthToMap, gameHeight * sx / heightToMap));
     }
 
     private static double map(double value, double istart, double istop, double ostart, double ostop) {

@@ -71,7 +71,7 @@ public class Warrior extends Entity {
         if (target == null) {
             //No hi ha target, busquem un
             for (Entity e : entityManager.getObjects()) {
-                if (e.getTeam() != team && dist(this, e) <= VISION_RANGE / 2) {
+                if (e.getTeam() != team && dist(this, e) <= VISION_RANGE / 2.0) {
                     //Es un enemic i esta en rango.
                     target = e;
                     break;
@@ -80,7 +80,7 @@ public class Warrior extends Entity {
         } else {
             //Target localitzat, ens dirigim a atacarlo
             double distance = dist(this, target);
-            if (distance <= VISION_RANGE / 2) {
+            if (distance <= VISION_RANGE / 2.0) {
                 double angle = Math.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX());
                 double tx = target.getCenterX() - target.getSizeX() * Math.cos(angle);
                 double ty = target.getCenterY() - target.getSizeY() * Math.sin(angle);
@@ -90,7 +90,7 @@ public class Warrior extends Entity {
                 else
                     addObjective(new Point2D.Double(tx, ty), false);
 
-                if (distance <= ATTACK_RANGE / 2) {
+                if (distance <= ATTACK_RANGE / 2.0) {
                     if (System.currentTimeMillis() - lastAttack >= attSpeed) {
                         int realDamage = target.calculateRealDamage(dmg);
                         boolean isDead = target.getDamage(realDamage);

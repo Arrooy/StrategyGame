@@ -1,6 +1,7 @@
 package Model.MassiveListManager;
 
 import Model.UI.Mouse_Area_Selection.MouseSelector;
+import Utils.DEBUG;
 
 import java.util.Collection;
 import java.util.Map;
@@ -30,10 +31,8 @@ import static Controlador.Controller.UPDATE_DELAY;
 public class DedicatedManager <T extends Managable> extends Thread {
 
     private Map<Double,T> objectsToManage;
-
-    public DedicatedManager() {
-        objectsToManage = new ConcurrentHashMap<>();
-    }
+    private String NameOfTheManager;
+    private long UpdateTime = 0;
 
     public void init() {
         this.start();
@@ -48,10 +47,18 @@ public class DedicatedManager <T extends Managable> extends Thread {
         MouseSelector.remove(e);
     }
 
+    public DedicatedManager(String NameOfTheManager) {
+        this.NameOfTheManager = NameOfTheManager;
+        objectsToManage = new ConcurrentHashMap<>();
+    }
+
     @Override
     public void run() {
         while(true){
+            UpdateTime = System.currentTimeMillis();
             objectsToManage.forEach((id, e) -> e.baseUpdate());
+            UpdateTime = System.currentTimeMillis() - UpdateTime;
+            DEBUG.add(NameOfTheManager + " Update Time [ms] :", UpdateTime);
             try {
                 sleep(UPDATE_DELAY);
             } catch (InterruptedException e) {
